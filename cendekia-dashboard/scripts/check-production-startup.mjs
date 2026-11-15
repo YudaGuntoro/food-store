@@ -7,12 +7,15 @@ const dll = resolve(project, 'bin/Debug/net8.0/Cendekia.WebAPI.dll');
 const valid = {
   ASPNETCORE_ENVIRONMENT: 'Production',
   Jwt__SigningKey: randomBytes(48).toString('base64'),
+  Jwt__ExpiresHours: '12',
   AllowedHosts: 'localhost;127.0.0.1',
   ConnectionStrings__DefaultConnection: 'Server=127.0.0.1;Port=33316;User ID=cms_test;Password=test-only;Database=cendekia_cms;',
   Security__DataProtectionKeyPath: resolve('.verify-cms/security-keys'),
 };
 for (const [override, expected] of [
   [{ Jwt__SigningKey: '' }, /JWT requires/],
+  [{ Jwt__ExpiresHours: '0' }, /lifetime of 1-12 hours/],
+  [{ Jwt__ExpiresHours: '13' }, /lifetime of 1-12 hours/],
   [{ Jwt__SigningKey: 'Cendekia-Local-Development-Jwt-Signing-Key-2026-Change-Me' }, /private production JWT/],
   [{ Jwt__SigningKey: 'a'.repeat(64) }, /private production JWT/],
   [{ AllowedHosts: '*' }, /explicit AllowedHosts/],

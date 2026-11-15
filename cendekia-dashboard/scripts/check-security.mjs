@@ -35,6 +35,11 @@ try {
   assert.equal(login.data.access_token, undefined, 'Browser login must never return a bearer token');
   const authCookie = login.response.headers.getSetCookie().find(x => x.startsWith('cendekia_session='));
   assert.match(authCookie, /httponly/i); assert.match(authCookie, /samesite=strict/i); assert.match(authCookie, /path=\/api/i);
+  const sessionToken = JSON.parse(Buffer.from(jar.get('cendekia_session').split('.')[1], 'base64url').toString());
+  assert.equal(sessionToken.exp - sessionToken.iat, 12 * 60 * 60, 'Browser session must last 12 hours');
+  assert.equal(Math.floor(Date.parse(login.data.expires_at) / 1000), sessionToken.exp, 'Session response must match JWT expiry');
+  const cookieExpiry = /expires=([^;]+)/i.exec(authCookie)?.[1];
+  assert.equal(Date.parse(cookieExpiry), sessionToken.exp * 1000, 'Cookie must expire with the JWT');
   assert.equal((await request('/api/auth/session')).data.user.username, 'admin');
   const replay = jar.get('cendekia_session');
   assert.equal((await request('/api/auth/logout', { method: 'POST' })).status, 403);
@@ -47,6 +52,8 @@ try {
   assert.equal(bad.status, 401); assert(!JSON.stringify(bad.payload).includes('Exception'));
   const bearer = await request('/api/auth/login', { method: 'POST', cookies: false, body: credentials });
   assert.equal(bearer.status, 200); admin = bearer.data.access_token;
+  const bearerToken = JSON.parse(Buffer.from(admin.split('.')[1], 'base64url').toString());
+  assert.equal(bearerToken.exp - bearerToken.iat, 12 * 60 * 60, 'Bearer token must last 12 hours');
   const name = 'SECURITY-' + randomUUID();
   const form = { username: name, full_name: name, password: randomUUID(), role: 'VIEWER', status: 'ACTIVE' };
   const created = await request('/api/users', { method: 'POST', token: admin, cookies: false, body: form });

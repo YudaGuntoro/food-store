@@ -19,8 +19,8 @@ public static class SecurityConfiguration
     public static void AddApiSecurity(this IServiceCollection services, IConfiguration config, IHostEnvironment environment, JwtSettings jwt)
     {
         var development = environment.IsDevelopment();
-        if (Encoding.UTF8.GetByteCount(jwt.SigningKey) < 32 || string.IsNullOrWhiteSpace(jwt.Issuer) || string.IsNullOrWhiteSpace(jwt.Audience) || jwt.ExpiresHours is < 1 or > 8)
-            throw new InvalidOperationException("JWT requires a signing key of at least 32 bytes, issuer, audience and a lifetime of 1-8 hours.");
+        if (Encoding.UTF8.GetByteCount(jwt.SigningKey) < 32 || string.IsNullOrWhiteSpace(jwt.Issuer) || string.IsNullOrWhiteSpace(jwt.Audience) || jwt.ExpiresHours is < 1 or > 12)
+            throw new InvalidOperationException("JWT requires a signing key of at least 32 bytes, issuer, audience and a lifetime of 1-12 hours.");
         if (!development) {
             if (jwt.SigningKey.Distinct().Count() < 16 || jwt.SigningKey.Contains("Development", StringComparison.OrdinalIgnoreCase) || jwt.SigningKey.Contains("Change-Me", StringComparison.OrdinalIgnoreCase) || jwt.SigningKey.Contains("REPLACE", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("A private production JWT signing key is required.");
