@@ -193,17 +193,15 @@ export default async function Home() {
             <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8'>SMPIT Cendekia Purwakarta membina iman, ilmu, dan amal melalui pembelajaran, kegiatan keagamaan, program bilingual, serta pengembangan bakat murid.</p>
             <div className='mt-6 w-full max-w-md sm:mt-8'>
               <div className='grid grid-cols-2 gap-3'>
-                <Link href='/spmb' className='inline-flex min-h-16 items-center justify-center gap-2 rounded-lg border border-school-blue bg-school-blue px-3 py-3 text-xs font-semibold text-white transition-colors hover:border-school-navy hover:bg-school-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
+                <Link href='/spmb' className='inline-flex min-h-20 items-center justify-center gap-2 rounded-xl border border-transparent bg-school-gold px-3 py-4 text-xs font-bold text-school-navy shadow-sm transition-colors hover:bg-[#ffca35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
                   Informasi SPMB <span aria-hidden='true'>→</span>
                 </Link>
-                <Link href='/lmp' className='inline-flex min-h-16 flex-col items-center justify-center gap-1 rounded-lg border border-school-blue bg-white px-3 py-3 text-center text-xs font-semibold text-school-blue transition-colors hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
+                <Link href='/lmp' className='inline-flex min-h-20 flex-col items-center justify-center gap-2 rounded-xl border border-transparent bg-school-blue px-3 py-4 text-center text-xs font-bold text-white shadow-sm transition-colors hover:bg-school-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
                   <span className='inline-flex items-center gap-2'>Informasi LMP <span aria-hidden='true'>→</span></span>
-                  <span className='text-[11px] font-normal leading-4 text-slate-600'>(Lomba Mata Pelajaran)</span>
+                  <span className='text-[11px] font-medium leading-4 text-white'>(Lomba Mata Pelajaran)</span>
                 </Link>
-              </div>
-              <div className='mt-3 flex flex-wrap items-center gap-x-6 gap-y-1'>
-                <a href='#tentang' className='inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-school-blue underline-offset-4 hover:underline sm:text-sm'>Kenali sekolah kami <span aria-hidden='true'>→</span></a>
-                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-school-blue underline-offset-4 hover:underline sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
+                <a href='#tentang' className='inline-flex min-h-12 items-center justify-center rounded-xl border border-sky-200 bg-white px-3 py-3 text-center text-xs font-bold text-school-navy transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'>Kenali sekolah kami</a>
+                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-3 text-xs font-bold text-school-blue transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
               </div>
             </div>
           </div>
