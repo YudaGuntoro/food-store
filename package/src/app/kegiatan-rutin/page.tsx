@@ -1,11 +1,9 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSchoolContent, getCmsCollection } from '../cms-content'
 
-export const metadata: Metadata = {
-  title: 'Kegiatan Rutin',
-  description: 'Kegiatan rutin murid SMPIT Cendekia Purwakarta, dari 7 Poe Atikan hingga Kultum.',
-}
+export const metadata: Metadata = pageMetadata("/kegiatan-rutin", "Kegiatan Rutin", "Kegiatan rutin murid SMPIT Cendekia Purwakarta, dari 7 Poe Atikan hingga Kultum.")
 
 const routineDetails: Record<string, { text: string; icon: string }> = {
   '7 Poe Atikan': {

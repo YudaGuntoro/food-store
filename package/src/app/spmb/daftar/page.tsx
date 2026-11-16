@@ -1,7 +1,8 @@
+import { pageMetadata } from '../../seo'
 import type { Metadata } from 'next'
 import SpmbRegistrationForm from '@/app/components/SpmbRegistrationForm'
 
-export const metadata: Metadata = { title: 'Formulir Pendaftaran SPMB', description: 'Pendaftaran calon murid SMPIT Cendekia Purwakarta.' }
+export const metadata: Metadata = pageMetadata("/spmb/daftar", "Formulir Pendaftaran SPMB", "Pendaftaran calon murid SMPIT Cendekia Purwakarta.", { noIndex: true })
 
 export default function SpmbRegistrationPage() {
   return <main className='bg-[#f5f7fa] pb-14 sm:pb-20'>

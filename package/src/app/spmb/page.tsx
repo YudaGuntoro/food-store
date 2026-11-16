@@ -1,13 +1,11 @@
+import { pageMetadata } from '../seo'
 import { getSpmbInformation } from './information'
 import { stepIcons } from './step-icons'
 import { getContactSettings, whatsappUrl } from '../contact-settings'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Informasi SPMB',
-  description: 'Informasi penerimaan murid baru SMPIT Cendekia Purwakarta.',
-}
+export const metadata: Metadata = pageMetadata("/spmb", "Informasi SPMB", "Informasi penerimaan murid baru SMPIT Cendekia Purwakarta.")
 
 export default async function SpmbInformationPage() {
   const [{ config, academicYear }, contact] = await Promise.all([getSpmbInformation(), getContactSettings()])

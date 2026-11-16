@@ -1,3 +1,4 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getLmpInformation } from './information'
@@ -6,7 +7,7 @@ import { getContactSettings, whatsappUrl } from '../contact-settings'
 import { stepIcons } from '../spmb/step-icons'
 import LmpSchedule from './Schedule'
 
-export const metadata: Metadata = { title: 'LMP · Lomba Mata Pelajaran', description: 'Informasi Lomba Mata Pelajaran untuk murid kelas 5 dan 6 SD di SMPIT Cendekia Purwakarta.' }
+export const metadata: Metadata = pageMetadata("/lmp", "LMP · Lomba Mata Pelajaran", "Informasi Lomba Mata Pelajaran untuk murid kelas 5 dan 6 SD di SMPIT Cendekia Purwakarta.")
 export default async function LmpPage() {
   const [{ config: c, isOpen, today }, contact] = await Promise.all([getLmpInformation(), getContactSettings()])
   const whatsapp = whatsappUrl(contact.whatsappNumber)

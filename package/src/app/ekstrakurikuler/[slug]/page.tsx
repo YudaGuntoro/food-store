@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getActivities } from '../activities'
 import ActivityPhoto from '../ActivityPhoto'
+import { pageMetadata } from '../../seo'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
@@ -14,7 +15,7 @@ async function activityFor(slug: string) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const activity = await activityFor((await params).slug)
-  return { title: `${activity.title} | Ekstrakurikuler`, description: activity.summary || `Kenali kegiatan ekstrakurikuler ${activity.title} di SMPIT Cendekia.` }
+  return pageMetadata(`/ekstrakurikuler/${encodeURIComponent(activity.slug)}`, `${activity.title} | Ekstrakurikuler`, activity.summary || `Kenali kegiatan ekstrakurikuler ${activity.title} di SMPIT Cendekia.`, { image: activity.imageUrl })
 }
 
 export default async function ActivityDetail({ params }: PageProps) {

@@ -1,13 +1,11 @@
+import { pageMetadata } from '../seo'
 import { getCmsCollection } from '../cms-content'
 import { ContentSections } from '../components/CmsSections'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import HistoryStorySelector from './HistoryStorySelector'
 
-export const metadata: Metadata = {
-  title: 'Sejarah Sekolah',
-  description: 'Sejarah dan perjalanan SMPIT Cendekia Purwakarta.',
-}
+export const metadata: Metadata = pageMetadata("/sejarah", "Sejarah Sekolah", "Sejarah dan perjalanan SMPIT Cendekia Purwakarta.")
 
 export default async function SejarahPage() {
   const entries = await getCmsCollection('profil')

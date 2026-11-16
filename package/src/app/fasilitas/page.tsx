@@ -1,11 +1,9 @@
+import { pageMetadata } from '../seo'
 import { getCmsCollection } from '../cms-content'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Fasilitas',
-  description: 'Fasilitas SMPIT Cendekia: ruang kelas AC, laboratorium komputer, perpustakaan, gedung aula, lapangan basket, dan masjid.',
-}
+export const metadata: Metadata = pageMetadata("/fasilitas", "Fasilitas", "Fasilitas SMPIT Cendekia: ruang kelas AC, laboratorium komputer, perpustakaan, gedung aula, lapangan basket, dan masjid.")
 
 const facilities = [
   { title: 'Ruang Kelas AC', text: 'Ruang kelas berpendingin udara untuk mendukung kenyamanan saat belajar.', icon: 'M3 21h18M5 21V5h14v16M9 9h2M14 9h1M9 13h2M14 13h1M10 21v-4h4v4', color: 'bg-sky-100 text-sky-700' },

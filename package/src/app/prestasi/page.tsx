@@ -1,12 +1,10 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import AchievementGrid from './AchievementGrid'
 import { getAchievements } from './data'
 
-export const metadata: Metadata = {
-  title: 'Prestasi Murid',
-  description: 'Pencapaian dan prestasi murid SMPIT Cendekia.',
-}
+export const metadata: Metadata = pageMetadata("/prestasi", "Prestasi Murid", "Pencapaian dan prestasi murid SMPIT Cendekia.")
 
 
 export default async function PrestasiPage() {

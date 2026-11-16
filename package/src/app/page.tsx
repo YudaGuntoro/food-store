@@ -1,3 +1,4 @@
+import { pageMetadata } from './seo'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -18,11 +19,7 @@ import { getSchoolContent, getCmsCollection } from './cms-content'
 // Keep this section available while it is hidden from the homepage.
 const showLearningEnvironment = false
 
-export const metadata: Metadata = {
-  title: 'SMPIT Cendekia Purwakarta | Tumbuh, Belajar, Berkarya',
-  description:
-    'Sekolah Cendekia adalah ruang belajar untuk bertumbuh, membangun karakter, dan mengembangkan potensi setiap anak.',
-}
+export const metadata: Metadata = pageMetadata("/", "SMPIT Cendekia Purwakarta | Bina Iman, Ilmu dan Amal", "Website resmi SMPIT Cendekia Purwakarta. Temukan informasi sekolah, program belajar, prestasi murid, SPMB, dan Lomba Mata Pelajaran (LMP).")
 
 const missionVisuals = [
   { title: 'Iman & akhlak', tone: 'bg-sky-100 text-sky-700', path: 'M3 21h18M5 21V10H2l2-4 2 4H5m14 11V10h3l-2-4-2 4h1M8 21v-8h8v8M8 13V9c0-2 4-3 4-5 0 2 4 3 4 5v4M12 4V2m-2 19v-4a2 2 0 0 1 4 0v4' },

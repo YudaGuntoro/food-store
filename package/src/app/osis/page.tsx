@@ -1,13 +1,11 @@
+import { pageMetadata } from '../seo'
 import { getCmsCollection } from '../cms-content'
 import { ContentSections } from '../components/CmsSections'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import OrganizationIllustration from '../components/OrganizationIllustration'
 
-export const metadata: Metadata = {
-  title: 'Struktur Organisasi OSIS',
-  description: 'Informasi struktur kepengurusan Organisasi Siswa Intra Sekolah (OSIS) SMPIT Cendekia Purwakarta.',
-}
+export const metadata: Metadata = pageMetadata("/osis", "Struktur Organisasi OSIS", "Informasi struktur kepengurusan Organisasi Siswa Intra Sekolah (OSIS) SMPIT Cendekia Purwakarta.")
 
 export default async function OsisPage() {
   const entries = await getCmsCollection('osis')

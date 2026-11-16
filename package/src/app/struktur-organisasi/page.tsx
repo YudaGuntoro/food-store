@@ -1,11 +1,9 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import OrganizationIllustration from '../components/OrganizationIllustration'
 
-export const metadata: Metadata = {
-  title: 'Struktur Organisasi',
-  description: 'Struktur organisasi SMPIT Cendekia Purwakarta.',
-}
+export const metadata: Metadata = pageMetadata("/struktur-organisasi", "Struktur Organisasi", "Struktur organisasi SMPIT Cendekia Purwakarta.")
 
 export default function StrukturOrganisasiPage() {
   return (

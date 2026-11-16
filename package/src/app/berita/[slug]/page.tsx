@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getSchoolContent } from '../../cms-content'
+import { pageMetadata } from '../../seo'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
@@ -11,7 +12,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { schoolNews } = await getSchoolContent()
   const news = schoolNews.find((item) => item.slug === slug)
   if (!news) notFound()
-  return { title: news.title, description: news.text }
+  return pageMetadata(`/berita/${encodeURIComponent(slug)}`, news.title, news.text, { image: news.image, publishedTime: news.publishedAt })
 }
 
 export default async function NewsDetailPage({ params }: PageProps) {

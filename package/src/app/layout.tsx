@@ -6,6 +6,8 @@ import Header from '@/app/components/Layout/Header'
 import Footer from '@/app/components/Layout/Footer'
 import ScrollToTop from '@/app/components/ScrollToTop'
 import ContactBubble from '@/app/components/ContactBubble'
+import SchoolStructuredData from './components/SchoolStructuredData'
+import { pageMetadata, schoolName, siteDescription, siteUrl } from './seo'
 
 const font = Inter({ subsets: ['latin'] })
 
@@ -13,11 +15,15 @@ const font = Inter({ subsets: ['latin'] })
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
+  metadataBase: new URL(siteUrl),
+  applicationName: schoolName,
   title: {
     default: 'SMPIT Cendekia Purwakarta',
     template: '%s | SMPIT Cendekia Purwakarta',
   },
-  description: 'SMPIT Cendekia Purwakarta - Unggul dalam Bina Iman, Ilmu dan Amal.',
+  description: siteDescription,
+  openGraph: pageMetadata('/', schoolName).openGraph,
+  twitter: pageMetadata('/', schoolName).twitter,
 }
 
 export default function RootLayout({
@@ -28,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang='id' data-scroll-behavior='smooth'>
       <body className={font.className}>
+        <Suspense fallback={null}><SchoolStructuredData /></Suspense>
         <Header />
         {/* Anchor async route hydration separately from the shared layout siblings. */}
         <Suspense fallback={null}>{children}</Suspense>

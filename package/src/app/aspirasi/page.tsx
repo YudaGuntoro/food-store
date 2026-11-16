@@ -1,10 +1,8 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import { getContactSettings, whatsappUrl } from '../contact-settings'
 
-export const metadata: Metadata = {
-  title: 'Kontak SMPIT Cendekia',
-  description: 'Informasi kontak SMPIT Cendekia Purwakarta.',
-}
+export const metadata: Metadata = pageMetadata("/aspirasi", "Kontak Sekolah", "Informasi kontak SMPIT Cendekia Purwakarta.")
 
 export default async function ContactPage() {
   const contact = await getContactSettings()

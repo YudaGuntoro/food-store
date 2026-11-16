@@ -1,8 +1,9 @@
+import { pageMetadata } from '../../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import SpmbStatusLookup from '../../components/SpmbStatusLookup'
 
-export const metadata: Metadata = { title: 'Cek Status Pendaftaran SPMB', robots: { index: false, follow: false } }
+export const metadata: Metadata = pageMetadata("/spmb/cek-status", "Cek Status Pendaftaran SPMB", undefined, { noIndex: true })
 
 export default function SpmbStatusPage() {
   return <main className='min-h-[70vh] bg-[#f3f8fd] px-5 py-10 sm:px-8 sm:py-14'>

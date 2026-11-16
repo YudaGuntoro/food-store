@@ -4,6 +4,12 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.resolve(__dirname),
+  async redirects() {
+    return [
+      { source: '/ppdb', destination: '/spmb', permanent: true },
+      { source: '/ppdb/daftar', destination: '/spmb/daftar', permanent: true },
+    ]
+  },
   async headers() {
     return [{ source: '/:path*', headers: [
       { key: 'X-Content-Type-Options', value: 'nosniff' },

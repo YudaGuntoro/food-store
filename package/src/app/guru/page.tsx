@@ -1,12 +1,10 @@
+import { pageMetadata } from '../seo'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import StaffGrid from './StaffGrid'
 import { getSchoolContent } from '../cms-content'
 
-export const metadata: Metadata = {
-  title: 'Pimpinan dan Tenaga Pendidik',
-  description: 'Kenali pimpinan sekolah, Yayasan YASRI Purwakarta, dan tenaga pendidik SMPIT Cendekia.',
-}
+export const metadata: Metadata = pageMetadata("/guru", "Pimpinan dan Tenaga Pendidik", "Kenali pimpinan sekolah, Yayasan YASRI Purwakarta, dan tenaga pendidik SMPIT Cendekia.")
 
 
 export default async function GuruPage() {

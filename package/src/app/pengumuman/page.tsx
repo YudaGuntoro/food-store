@@ -1,11 +1,9 @@
+import { pageMetadata } from '../seo'
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getSchoolContent, getCmsCollection } from '../cms-content'
 
-export const metadata: Metadata = {
-  title: 'Pengumuman Terbaru',
-  description: 'Informasi kegiatan dan pengumuman Sekolah Cendekia.',
-}
+export const metadata: Metadata = pageMetadata("/pengumuman", "Pengumuman Terbaru", "Informasi kegiatan dan pengumuman Sekolah Cendekia.")
 
 const iconColors = ['bg-sky-100 text-sky-700', 'bg-blue-100 text-blue-700', 'bg-cyan-100 text-cyan-800', 'bg-sky-100 text-school-blue']
 

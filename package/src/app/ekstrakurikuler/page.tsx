@@ -1,12 +1,10 @@
+import { pageMetadata } from '../seo'
 import { getActivities } from './activities'
 import ActivityPhoto from './ActivityPhoto'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Ekstrakurikuler',
-  description: 'Jelajahi ruang minat, kreativitas, dan kebugaran murid SMPIT Cendekia.',
-}
+export const metadata: Metadata = pageMetadata("/ekstrakurikuler", "Ekstrakurikuler", "Jelajahi ruang minat, kreativitas, dan kebugaran murid SMPIT Cendekia.")
 
 export default async function EkstrakurikulerPage() {
   const visible = await getActivities()
