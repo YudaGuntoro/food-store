@@ -1,5 +1,13 @@
 # Arsitektur backend dan normalisasi database
 
+## Hapus pendaftar LMP
+
+Kolom Aksi pada `/lmp/pendaftar` memuat detail dan ikon hapus. Dialog menyebut nama/nomor pendaftar, menjelaskan penghapusan permanen, dan mewajibkan checkbox sebelum tombol Hapus aktif. Checkbox direset setiap dialog dibuka atau permintaan gagal. Akun ADMIN/SUPERVISOR/OPERATOR mengikuti otorisasi LMP yang sudah ada; tombol disembunyikan bagi akun lain.
+
+`DELETE /api/lmp/applications/{id}` menerima JSON `{ confirmed: true, version: <versi daftar> }`. Controller hanya memetakan transport; service memeriksa konfirmasi dan Version, kemudian repository/unit of work menghapus baris dengan optimistic concurrency. Konflik menghasilkan 409 dan record tidak ditemukan menghasilkan 404. DELETE cookie tetap wajib CSRF. FK yang sudah ada menghapus PDF dan bukti pembayaran secara cascade; master mata pelajaran dan acara historis tidak dihapus. Tidak perlu migrasi database. Deploy API dan dashboard bersama.
+
+Verifikasi dari folder dashboard: `BROWSER_CHANNEL=chrome node scripts/check-lmp-delete.mjs` (sesuaikan sintaks environment untuk shell). Tes hanya membuat/menghapus fixture sendiri, memeriksa otorisasi, CSRF, konfirmasi, konflik versi, popup, checkbox, pembatalan, pembaruan tabel, mobile dan cascade lampiran, lalu memastikan pendaftar/acara asli tetap ada.
+
 ## Daftar prestasi bertahap
 
 Halaman publik `/prestasi` memuat 8 kartu pertama melalui `/api/school/achievements?offset=0&limit=8`. Tombol Lihat lebih banyak mengambil 4 kartu berikutnya. Filter koleksi/publikasi/tanggal dan pencarian judul/kategori diterapkan di Application melalui repository; `CountAsync` dan proyeksi `SelectAsync` dengan Skip/Take dijalankan di database. Respons hanya berisi `items` (slug, judul, kategori, cerita dan URL foto) serta `total`, tanpa BLOB atau field staf. Urutan tanggal publikasi dan Id menurun memberi urutan tetap untuk tanggal yang sama. Pencarian mencakup seluruh prestasi terbit, bukan hanya kartu yang sudah dimuat. API membatasi limit maksimal 8 dan panjang pencarian 200 karakter; respons no-store.

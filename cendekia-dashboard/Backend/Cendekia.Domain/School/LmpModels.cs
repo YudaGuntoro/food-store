@@ -100,6 +100,12 @@ public class LmpStatusRequest
     public int Version { get; set; }
 }
 
+public class LmpDeleteRequest
+{
+    public bool Confirmed { get; set; }
+    [Range(1, int.MaxValue)] public int Version { get; set; }
+}
+
 public class LmpLookupRequest
 {
     [Required, MinLength(2), MaxLength(150)] public string StudentName { get; set; } = "";

@@ -26,6 +26,12 @@
 .lmp-applicants-table { min-width: 1250px; table-layout: auto; }
 .lmp-applicants-table th, .lmp-applicants-table td { white-space: nowrap; }
 .lmp-applicants-table td:nth-child(2) { white-space: normal; min-width: 220px; max-width: 300px; }
+.lmp-applicants-table th:last-child, .lmp-applicants-table td:last-child { min-width: 150px; }
+.lmp-delete-dialog { max-width: 520px; }
+.lmp-delete-dialog .cms-form-body { display: block; }
+.cms-form-body .lmp-delete-confirm { display: flex; align-items: flex-start; gap: 12px; margin-top: 20px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; line-height: 1.6; cursor: pointer; }
+.cms-form-body .lmp-delete-confirm input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; margin-top: 3px; padding: 0; accent-color: #dc2626; }
+.dark .cms-form-body .lmp-delete-confirm { border-color: #324b67; }
 .spmb-applicants-table th, .spmb-applicants-table td { white-space: nowrap; }
 .spmb-applicants-table td:nth-child(2) { white-space: normal; min-width: 200px; max-width: 300px; }
 .spmb-row-subtitle { display: block; color: var(--cms-muted); font-size: 13px; margin-top: 5px; }

@@ -55,4 +55,6 @@ public class LmpController(LmpService service) : ApiControllerBase
         return File(download.Content, "application/pdf", download.FileName);
     }
     [HttpPut("applications/{id:int}/status")] public async Task<IActionResult> Status(int id, LmpStatusRequest request) => FromService(await service.Status(id, request));
+    [HttpDelete("applications/{id:int}"), Consumes("application/json"), RequestSizeLimit(2048)]
+    public async Task<IActionResult> Delete(int id, LmpDeleteRequest request) => FromService(await service.Delete(id, request, HttpContext.RequestAborted));
 }

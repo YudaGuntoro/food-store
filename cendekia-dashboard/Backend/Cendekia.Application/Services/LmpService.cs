@@ -120,7 +120,7 @@ public class LmpService(ILmpRepository repository, IApplicationUnitOfWork unitOf
         page = Math.Clamp(page, 1, 100000); limit = Math.Clamp(limit, 1, 100);
         var filter = ApplicantFilter(search, subject, grade, status, payment);
         var total = await repository.Applications.CountAsync(filter);
-        var items = await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.StudentName, x.Nisn, x.PreviousSchool, x.Grade, subjects = x.Subject.Name, x.Status, x.PaymentStatus, x.SubmittedAt }, filter, x => x.Id, descending: true, skip: (page-1)*limit, take: limit);
+        var items = await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.StudentName, x.Nisn, x.PreviousSchool, x.Grade, subjects = x.Subject.Name, x.Status, x.PaymentStatus, x.SubmittedAt, x.Version }, filter, x => x.Id, descending: true, skip: (page-1)*limit, take: limit);
         return ApiOk(new { items, total });
     }
     public async Task<ServiceResult> Detail(int id)
@@ -152,5 +152,16 @@ public class LmpService(ILmpRepository repository, IApplicationUnitOfWork unitOf
         row.Status = request.Status; row.PaymentStatus = request.PaymentStatus; row.Version++;
         try { await unitOfWork.SaveChangesAsync(); } catch (StorageConcurrencyException) { return Conflict("Data berubah. Buka ulang detail peserta."); }
         return ApiOk(new { row.Status, row.PaymentStatus, row.Nisn, row.Version });
+    }
+    public async Task<ServiceResult> Delete(int id, LmpDeleteRequest request, CancellationToken cancellationToken = default)
+    {
+        if (!request.Confirmed || request.Version < 1) return ApiBadRequest("Centang konfirmasi sebelum menghapus pendaftar.");
+        var row = await repository.Applications.FirstAsync(x => x.Id == id, tracking: true, cancellationToken: cancellationToken);
+        if (row is null) return ApiNotFound("Pendaftar tidak ditemukan atau sudah dihapus.");
+        if (row.Version != request.Version) return Conflict("Data pendaftar berubah. Muat ulang daftar sebelum menghapus.");
+        repository.Applications.Remove(row);
+        try { await unitOfWork.SaveChangesAsync(cancellationToken); }
+        catch (StorageConcurrencyException) { return Conflict("Data pendaftar berubah. Muat ulang daftar sebelum menghapus."); }
+        return ApiOk(new { id }, "Pendaftar LMP berhasil dihapus.");
     }
 }
