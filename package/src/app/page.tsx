@@ -192,7 +192,7 @@ export default async function Home() {
             <h1 className='mt-4 max-w-2xl text-[32px] font-black leading-[1.12] tracking-tight text-school-navy sm:text-5xl lg:text-[3.65rem]'>Unggul dalam <span className='text-school-blue'>Bina Iman, Ilmu</span> dan Amal.</h1>
             <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8'>SMPIT Cendekia Purwakarta membina iman, ilmu, dan amal melalui pembelajaran, kegiatan keagamaan, program bilingual, serta pengembangan bakat murid.</p>
             <div className='mt-6 w-full max-w-md sm:mt-8'>
-              <div className='grid grid-cols-2 gap-3'>
+              <div className='grid auto-rows-fr grid-cols-2 gap-3'>
                 <Link href='/spmb' className='inline-flex min-h-20 items-center justify-center gap-2 rounded-xl border border-transparent bg-school-gold px-3 py-4 text-xs font-bold text-school-navy shadow-sm transition-colors hover:bg-[#ffca35] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
                   Informasi SPMB <span aria-hidden='true'>→</span>
                 </Link>
@@ -200,8 +200,8 @@ export default async function Home() {
                   <span className='inline-flex items-center gap-2'>Informasi LMP <span aria-hidden='true'>→</span></span>
                   <span className='text-[11px] font-medium leading-4 text-white'>(Lomba Mata Pelajaran)</span>
                 </Link>
-                <a href='#tentang' className='inline-flex min-h-12 items-center justify-center rounded-xl border border-sky-200 bg-white px-3 py-3 text-center text-xs font-bold text-school-navy transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'>Kenali sekolah kami</a>
-                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-3 text-xs font-bold text-school-blue transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
+                <a href='#tentang' className='inline-flex min-h-20 items-center justify-center rounded-xl border border-sky-200 bg-white px-3 py-4 text-center text-xs font-bold text-school-navy transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'>Kenali sekolah kami</a>
+                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-20 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-4 text-xs font-bold text-school-blue transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
               </div>
             </div>
           </div>
