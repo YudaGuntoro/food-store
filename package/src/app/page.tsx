@@ -193,7 +193,7 @@ export default async function Home() {
             <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8'>SMPIT Cendekia Purwakarta membina iman, ilmu, dan amal melalui pembelajaran, kegiatan keagamaan, program bilingual, serta pengembangan bakat murid.</p>
             <div className='mt-6 w-full max-w-xl sm:mt-8'>
               <div className='grid grid-cols-2 gap-3'>
-                <Link href='/spmb' className='group flex flex-col gap-2 rounded-2xl border border-amber-200 bg-school-butter p-4 text-left transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:p-5'>
+                <Link href='/spmb' className='group flex flex-col justify-center gap-2 rounded-2xl border border-amber-200 bg-school-butter p-4 text-left transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:p-5'>
                   <span className='flex items-center justify-between gap-2 text-base font-bold text-school-navy'><span><span className='hidden sm:inline'>Informasi </span>SPMB</span><span aria-hidden='true' className='text-base text-amber-700 transition-transform group-hover:translate-x-1'>→</span></span>
                 </Link>
                 <Link href='/lmp' className='group flex flex-col gap-2 rounded-2xl border border-sky-200 bg-white p-4 text-left transition hover:border-sky-400 hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:p-5'>
