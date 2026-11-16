@@ -200,8 +200,8 @@ export default async function Home() {
                   <span className='inline-flex items-center gap-2'>Informasi LMP <span aria-hidden='true'>→</span></span>
                   <span className='text-[11px] font-medium leading-4 text-white'>(Lomba Mata Pelajaran)</span>
                 </Link>
-                <a href='#tentang' className='inline-flex min-h-20 items-center justify-center rounded-xl border border-sky-200 bg-white px-3 py-4 text-center text-xs font-bold text-school-navy transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'>Kenali sekolah kami</a>
-                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-20 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-4 text-xs font-bold text-school-blue transition-colors hover:border-sky-400 hover:bg-sky-50 sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
+                <a href='#tentang' className='inline-flex min-h-20 items-center justify-center rounded-xl border border-transparent bg-emerald-700 px-3 py-4 text-center text-xs font-bold text-white shadow-sm transition-colors hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700 sm:text-sm'>Kenali sekolah kami</a>
+                <a href='/brosur-ppdb.pdf' download className='inline-flex min-h-20 items-center justify-center gap-2 rounded-xl border border-transparent bg-violet-700 px-3 py-4 text-xs font-bold text-white shadow-sm transition-colors hover:bg-violet-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet-700 sm:text-sm'><svg viewBox='0 0 24 24' className='h-4 w-4 shrink-0 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
               </div>
             </div>
           </div>
