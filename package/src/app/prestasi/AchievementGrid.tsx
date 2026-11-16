@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 type Achievement = {
+  slug: string
   body?: string
   image?: string
   level: string
@@ -52,24 +53,24 @@ export default function AchievementGrid({ achievements }: { achievements: Achiev
       {filteredAchievements.length ? (
         <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-4'>
           {filteredAchievements.map((achievement, index) => (
-            <article key={`${achievement.title}-${index}`} className='group overflow-hidden rounded-2xl border border-white bg-white shadow-[0_12px_32px_-22px_rgba(15,45,78,.3)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-24px_rgba(30,101,168,.32)]'>
-              <div className={`relative flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br ${palettes[index % palettes.length]}`}>
+            <article id={achievement.slug} key={achievement.slug} className='group flex scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-white bg-white shadow-[0_12px_32px_-22px_rgba(15,45,78,.3)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-24px_rgba(30,101,168,.32)]'>
+              <div className={`relative flex aspect-square shrink-0 items-center justify-center overflow-hidden bg-gradient-to-br ${palettes[index % palettes.length]}`}>
                 <div aria-hidden='true' className='absolute -right-8 -top-12 h-40 w-40 rounded-full border-[22px] border-white/55' />
                 <div aria-hidden='true' className='absolute -bottom-14 -left-4 h-32 w-32 rounded-full bg-white/50 blur-sm' />
                 <span className='absolute left-4 top-4 rounded-full border border-white/80 bg-white/90 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-school-blue shadow-sm'><span aria-hidden='true'>&#127942;</span> Juara</span>
                 {achievement.image ? <img src={achievement.image} alt={achievement.title} className='absolute inset-0 h-full w-full object-contain bg-white' loading='lazy' /> : <TrophyIcon />}
                 {!achievement.image && <span className='absolute bottom-4 left-5 text-[9px] font-black uppercase tracking-[.2em] opacity-60'>Prestasi Murid SMPIT Cendekia</span>}
               </div>
-              <div className='flex min-h-[203px] flex-col p-5'>
+              <div className='flex min-h-[203px] flex-1 flex-col p-5'>
                 <p className='flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[.12em] text-sky-700'><span className='flex h-5 w-5 items-center justify-center rounded-full bg-sky-50 text-xs' aria-hidden='true'>&#10022;</span>{achievement.level}</p>
-                <h2 className='mt-3 min-h-[2.75rem] text-base font-bold leading-snug text-slate-900'>{achievement.title}</h2>
-                {achievement.body && <details className='mt-4 border-t border-slate-100 pt-4 text-sm text-slate-600'><summary className='cursor-pointer font-bold text-school-blue'>Cerita prestasi</summary><p className='mt-3 whitespace-pre-line leading-7'>{achievement.body}</p></details>}
+                <h2 className='mb-4 mt-3 min-h-[2.75rem] text-base font-bold leading-snug text-slate-900'>{achievement.title}</h2>
+                {achievement.body && <details className='mt-auto border-t border-slate-100 pt-4 text-sm text-slate-600'><summary className='cursor-pointer font-bold text-school-blue'>Cerita prestasi</summary><p className='mt-3 whitespace-pre-line leading-7'>{achievement.body}</p></details>}
               </div>
             </article>
           ))}
         </div>
       ) : (
-        <p className='rounded-xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500'>Prestasi yang dicari belum ditemukan.</p>
+        <p className='rounded-xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500'>{query.trim() ? 'Prestasi yang dicari belum ditemukan.' : 'Belum ada prestasi yang dipublikasikan.'}</p>
       )}
     </>
   )

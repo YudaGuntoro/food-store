@@ -191,8 +191,9 @@ export default async function Home() {
           <div className='relative z-10'>
             <h1 className='mt-4 max-w-2xl text-[32px] font-black leading-[1.12] tracking-tight text-school-navy sm:text-5xl lg:text-[3.65rem]'>Unggul dalam <span className='text-school-blue'>Bina Iman, Ilmu</span> dan Amal.</h1>
             <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8'>SMPIT Cendekia Purwakarta membina iman, ilmu, dan amal melalui pembelajaran, kegiatan keagamaan, program bilingual, serta pengembangan bakat murid.</p>
-            <div className='mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:flex sm:flex-row sm:flex-wrap lg:flex-nowrap'>
-              <a href='/spmb' className='col-span-2 inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-school-gold px-5 py-3 text-sm font-bold text-school-navy shadow-lg shadow-amber-900/10 transition hover:-translate-y-0.5 hover:bg-[#ffca35]'>Informasi SPMB <span aria-hidden='true'>?</span></a>
+            <div className='mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:flex sm:flex-row sm:flex-wrap'>
+              <Link href='/spmb' className='inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-school-gold px-3 py-3 text-xs font-bold text-school-navy shadow-lg shadow-amber-900/10 transition hover:-translate-y-0.5 hover:bg-[#ffca35] sm:px-5 sm:text-sm'>Informasi SPMB <span aria-hidden='true'>?</span></Link>
+              <Link href='/lmp' className='inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-school-blue px-3 py-3 text-xs font-bold text-white shadow-lg shadow-blue-900/10 transition hover:-translate-y-0.5 hover:bg-school-navy sm:px-5 sm:text-sm'>Informasi LMP <span aria-hidden='true'>?</span></Link>
               <a href='#tentang' className='inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-xl border border-sky-200 bg-white px-2 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm font-bold text-school-navy transition hover:border-sky-400 hover:bg-sky-50'>Kenali sekolah kami</a>
               <a href='/brosur-ppdb.pdf' download className='inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-sky-200 bg-white px-2 py-2.5 text-xs sm:px-4 sm:py-3 sm:text-sm font-bold text-school-blue transition hover:border-sky-400 hover:bg-sky-50'><svg viewBox='0 0 24 24' className='h-4 w-4 fill-none stroke-current' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3'/></svg>Unduh brosur</a>
             </div>
@@ -275,26 +276,26 @@ export default async function Home() {
         <div className='mx-auto max-w-7xl px-5 sm:px-8 lg:px-10'>
           <div className='mx-auto mb-6 max-w-2xl text-center sm:mb-12'>
             <h2 className='text-2xl font-black tracking-tight text-school-navy sm:text-4xl'>Prestasi <span className='text-sky-600'>Murid</span></h2>
-            <p className='mt-3 text-sm leading-6 text-slate-600 sm:mt-4 sm:leading-7 sm:text-base'>Prestasi murid SMPIT Cendekia yang tercantum dalam brosur sekolah.</p>
+            <p className='mt-3 text-sm leading-6 text-slate-600 sm:mt-4 sm:leading-7 sm:text-base'>4 prestasi terbaru murid SMPIT Cendekia.</p>
           </div>
           <div className='grid gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4'>
             {achievements.slice(0, 4).map((achievement, index) => (
               <article key={`${achievement.title}-${index}`} className='group overflow-hidden rounded-2xl border border-white bg-white shadow-[0_12px_32px_-22px_rgba(15,45,78,.3)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-24px_rgba(30,101,168,.32)]'>
                 <div className='relative hidden overflow-hidden sm:block'>
-                  <AchievementPlaceholder index={index} />
+                  {achievement.image ? <img src={achievement.image} alt={achievement.title} className='aspect-square w-full bg-white object-contain' loading='lazy' /> : <AchievementPlaceholder index={index} />}
                   <span className='absolute left-4 top-4 rounded-full border border-school-gold/50 bg-school-butter px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-school-navy shadow-sm backdrop-blur'>🏆 Juara</span>
                 </div>
                 <div className='flex flex-col p-4 sm:min-h-[203px] sm:p-5'>
                   <p className='flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.12em] text-sky-700'><span className='flex h-5 w-5 items-center justify-center rounded-full bg-sky-50 text-xs'>✦</span>{achievement.level}</p>
                   <h3 className='mt-2 text-[15px] font-bold leading-snug sm:mt-3 sm:min-h-[2.75rem] sm:text-base text-slate-900'>{achievement.title}</h3>
-                  <a href='#prestasi' className='mt-3 flex items-center gap-2 border-t border-slate-100 pt-3 sm:mt-auto sm:pt-4 text-[10px] font-extrabold uppercase tracking-[0.12em] text-school-blue hover:text-indigo-700'>Detail prestasi <span aria-hidden='true'>↗</span></a>
+                  <Link href={`/prestasi#${achievement.slug}`} className='mt-3 flex items-center gap-2 border-t border-slate-100 pt-3 sm:mt-auto sm:pt-4 text-[10px] font-extrabold uppercase tracking-[0.12em] text-school-blue hover:text-indigo-700'>Detail prestasi <span aria-hidden='true'>↗</span></Link>
                 </div>
               </article>
             ))}
           </div>
           <div className='mt-6 text-center sm:mt-9'>
             <Link href='/prestasi' className='inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-5 py-3 text-sm font-bold text-school-blue shadow-sm transition hover:border-school-blue hover:bg-sky-50'>
-              Lihat Lebih Banyak <span aria-hidden='true'>→</span>
+              Lihat Prestasi Terbaru <span aria-hidden='true'>→</span>
             </Link>
           </div>
         </div>

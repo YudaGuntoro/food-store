@@ -24,12 +24,14 @@ const date = (value: string) => new Intl.DateTimeFormat('id-ID', { day: 'numeric
 const byName = (a: { name: string }, b: { name: string }) => a.name.trim().localeCompare(b.name.trim(), 'id', { sensitivity: 'base' })
 export async function getSchoolContent() {
   const entries = await getCmsContent()
-  if (entries === null) return { ...defaults, schoolNews: defaults.schoolNews.map(n => ({ ...n, image: '' })), staff: defaults.staff.map(n => ({ ...n, bio: '' })).sort(byName), achievements: defaults.achievements.map(n => ({ ...n, body: '', image: '' })) }
+  if (entries === null) return { ...defaults, schoolNews: defaults.schoolNews.map(n => ({ ...n, image: '' })), staff: defaults.staff.map(n => ({ ...n, bio: '' })).sort(byName), achievements: [] }
   const group = (key: string) => entries.filter(e => e.collection === key)
   return {
     schoolNews: group('berita').map(e => ({ slug: e.slug, title: e.title, category: e.category, text: e.summary, body: e.body.split(/\n\s*\n/).filter(Boolean), image: e.imageUrl, date: date(e.publishedAt), publishedAt: e.publishedAt.slice(0, 10), visual: 'literasi' })),
     announcements: group('pengumuman').map(e => ({ title: e.title, date: date(e.publishedAt), text: e.body || e.summary })),
-    achievements: group('prestasi').map(e => ({ title: e.title, level: e.category, body: [e.summary, e.body !== e.summary ? e.body : ''].filter(Boolean).join('\n\n'), image: e.imageUrl })),
+    achievements: group('prestasi')
+      .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug))
+      .map(e => ({ slug: e.slug, title: e.title, level: e.category, body: [e.summary, e.body !== e.summary ? e.body : ''].filter(Boolean).join('\n\n'), image: e.imageUrl })),
     staff: group('guru').map(e => ({ name: e.title, role: e.category, image: e.imageUrl || '/images/mentor/girl1.svg', bio: [e.summary, e.body !== e.summary ? e.body : ''].filter(Boolean).join('\n\n') })).sort(byName),
     schoolRoutines: group('kegiatan').map(e => e.title),
   }
