@@ -57,4 +57,6 @@ public class SpmbController(SpmbService service) : ApiControllerBase
     [HttpGet("applications")] public async Task<IActionResult> Applications(string? year, int? wave, string? status, string? search, int page = 1, int limit = 10, string? payment = null) => FromService(await service.Applications(year, wave, status, search, page, limit, payment));
     [HttpGet("applications/{id:int}")] public async Task<IActionResult> Detail(int id) => FromService(await service.Detail(id));
     [HttpPut("applications/{id:int}/status")] public async Task<IActionResult> Status(int id, SpmbStatusRequest request) => FromService(await service.Status(id, request));
+    [HttpDelete("applications/{id:int}"), Consumes("application/json"), RequestSizeLimit(2048)]
+    public async Task<IActionResult> Delete(int id, SpmbDeleteRequest request) => FromService(await service.Delete(id, request, HttpContext.RequestAborted));
 }

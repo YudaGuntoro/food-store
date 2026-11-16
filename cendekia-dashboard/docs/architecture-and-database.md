@@ -1,12 +1,12 @@
 # Arsitektur backend dan normalisasi database
 
-## Hapus pendaftar LMP
+## Hapus pendaftar LMP dan SPMB
 
-Kolom Aksi pada `/lmp/pendaftar` memuat detail dan ikon hapus. Dialog menyebut nama/nomor pendaftar, menjelaskan penghapusan permanen, dan mewajibkan checkbox sebelum tombol Hapus aktif. Checkbox direset setiap dialog dibuka atau permintaan gagal. Akun ADMIN/SUPERVISOR/OPERATOR mengikuti otorisasi LMP yang sudah ada; tombol disembunyikan bagi akun lain.
+Kolom Aksi pada `/lmp/pendaftar` dan `/spmb/pendaftar` memuat detail dan ikon hapus. Dialog menyebut nama/nomor pendaftar, menjelaskan penghapusan permanen, dan mewajibkan checkbox sebelum tombol Hapus aktif. Checkbox direset setiap dialog dibuka atau permintaan gagal. Akun ADMIN/SUPERVISOR/OPERATOR mengikuti otorisasi pendaftaran yang sudah ada; tombol disembunyikan bagi akun lain.
 
-`DELETE /api/lmp/applications/{id}` menerima JSON `{ confirmed: true, version: <versi daftar> }`. Controller hanya memetakan transport; service memeriksa konfirmasi dan Version, kemudian repository/unit of work menghapus baris dengan optimistic concurrency. Konflik menghasilkan 409 dan record tidak ditemukan menghasilkan 404. DELETE cookie tetap wajib CSRF. FK yang sudah ada menghapus PDF dan bukti pembayaran secara cascade; master mata pelajaran dan acara historis tidak dihapus. Tidak perlu migrasi database. Deploy API dan dashboard bersama.
+`DELETE /api/lmp/applications/{id}` dan `DELETE /api/spmb/applications/{id}` menerima JSON `{ confirmed: true, version: <versi daftar> }`. Controller hanya memetakan transport; service memeriksa konfirmasi dan Version, kemudian repository/unit of work menghapus baris dengan optimistic concurrency. Konflik menghasilkan 409 dan record tidak ditemukan menghasilkan 404. DELETE cookie tetap wajib CSRF. FK yang sudah ada menghapus PDF, bukti pembayaran dan profil keluarga SPMB secara cascade; master mata pelajaran, acara historis LMP dan periode gelombang SPMB tidak dihapus. Tidak perlu migrasi database. Deploy API dan dashboard bersama.
 
-Verifikasi dari folder dashboard: `BROWSER_CHANNEL=chrome node scripts/check-lmp-delete.mjs` (sesuaikan sintaks environment untuk shell). Tes hanya membuat/menghapus fixture sendiri, memeriksa otorisasi, CSRF, konfirmasi, konflik versi, popup, checkbox, pembatalan, pembaruan tabel, mobile dan cascade lampiran, lalu memastikan pendaftar/acara asli tetap ada.
+Verifikasi dari folder dashboard: `BROWSER_CHANNEL=chrome node scripts/check-lmp-delete.mjs` dan `BROWSER_CHANNEL=chrome node scripts/check-spmb-delete.mjs` (sesuaikan sintaks environment untuk shell). Tes hanya membuat/menghapus fixture sendiri, memeriksa otorisasi, CSRF, konfirmasi, konflik versi, popup, checkbox, pembatalan, pembaruan tabel, mobile dan cascade lampiran/profil, lalu memastikan pendaftar dan riwayat jadwal asli tetap ada.
 
 ## Daftar prestasi bertahap
 

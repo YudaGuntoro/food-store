@@ -129,6 +129,12 @@ public class SpmbStatusRequest
     public int Version { get; set; }
 }
 
+public class SpmbDeleteRequest
+{
+    public bool Confirmed { get; set; }
+    [Range(1, int.MaxValue)] public int Version { get; set; }
+}
+
 public class SpmbLookupRequest
 {
     [Required, MinLength(2), MaxLength(150)] public string StudentName { get; set; } = "";

@@ -202,7 +202,7 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
         var filter = ApplicantFilter(year, wave, status, search, payment);
         var total = await repository.Applications.CountAsync(filter);
         var years = await repository.GetAcademicYearsAsync();
-        var items = await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.AcademicYear, x.WaveNumber, x.StudentName, x.PreviousSchool, x.TargetGrade, x.Status, x.PaymentStatus, x.SubmittedAt }, filter, x => x.Id, descending: true, skip: (page - 1) * limit, take: limit);
+        var items = await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.AcademicYear, x.WaveNumber, x.StudentName, x.PreviousSchool, x.TargetGrade, x.Status, x.PaymentStatus, x.SubmittedAt, x.Version }, filter, x => x.Id, descending: true, skip: (page - 1) * limit, take: limit);
         return ApiOk(new { items, total, page, limit, years });
     }
     public async Task<ServiceResult> Detail(int id)
@@ -238,5 +238,16 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
         try { await unitOfWork.SaveChangesAsync(); }
         catch (StorageConcurrencyException) { return Conflict("Data sudah berubah. Buka ulang detail pendaftar."); }
         return ApiOk(new { entry.Status, entry.PaymentStatus, entry.Version }, "Status pendaftaran disimpan.");
+    }
+    public async Task<ServiceResult> Delete(int id, SpmbDeleteRequest request, CancellationToken cancellationToken = default)
+    {
+        if (!request.Confirmed || request.Version < 1) return ApiBadRequest("Centang konfirmasi sebelum menghapus pendaftar.");
+        var row = await repository.Applications.FirstAsync(x => x.Id == id, tracking: true, cancellationToken: cancellationToken);
+        if (row is null) return ApiNotFound("Pendaftar tidak ditemukan atau sudah dihapus.");
+        if (row.Version != request.Version) return Conflict("Data pendaftar berubah. Muat ulang daftar sebelum menghapus.");
+        repository.Applications.Remove(row);
+        try { await unitOfWork.SaveChangesAsync(cancellationToken); }
+        catch (StorageConcurrencyException) { return Conflict("Data pendaftar berubah. Muat ulang daftar sebelum menghapus."); }
+        return ApiOk(new { id }, "Pendaftar SPMB berhasil dihapus.");
     }
 }
