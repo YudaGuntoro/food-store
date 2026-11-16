@@ -44,7 +44,7 @@ const Footer = async () => {
     </div>
 
     <div className='border-t border-white/10 bg-white/5'>
-      <div className='mx-auto max-w-7xl space-y-1.5 px-5 py-5 text-center text-xs leading-5 sm:px-8 lg:px-10'>
+      <div className='mx-auto flex max-w-7xl flex-col px-5 py-2 text-center text-xs leading-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-4 sm:text-left lg:px-10'>
         <p className='text-blue-100/75'>© {new Date().getFullYear()} Sekolah Cendekia. Semua hak dilindungi.</p>
         <p className='text-blue-100/85'>Powered By <span className='font-semibold text-white'>Nusakarya Digital Solution</span></p>
       </div>
