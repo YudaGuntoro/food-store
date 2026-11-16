@@ -191,15 +191,15 @@ export default async function Home() {
           <div className='relative z-10'>
             <h1 className='mt-4 max-w-2xl text-[32px] font-black leading-[1.12] tracking-tight text-school-navy sm:text-5xl lg:text-[3.65rem]'>Unggul dalam <span className='text-school-blue'>Bina Iman, Ilmu</span> dan Amal.</h1>
             <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8'>SMPIT Cendekia Purwakarta membina iman, ilmu, dan amal melalui pembelajaran, kegiatan keagamaan, program bilingual, serta pengembangan bakat murid.</p>
-            <div className='mt-6 w-full max-w-xl sm:mt-8'>
-              <div className='grid grid-cols-2 gap-3'>
-                <Link href='/spmb' className='group flex flex-col justify-center gap-2 rounded-2xl border border-amber-200 bg-school-butter p-4 text-left transition hover:border-amber-400 hover:bg-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:p-5'>
-                  <span className='flex items-center justify-between gap-2 text-base font-bold text-school-navy'><span><span className='hidden sm:inline'>Informasi </span>SPMB</span><span aria-hidden='true' className='text-base text-amber-700 transition-transform group-hover:translate-x-1'>→</span></span>
+            <div className='mt-6 w-full max-w-md sm:mt-8'>
+              <div className='grid grid-cols-2 items-start gap-x-3 gap-y-2'>
+                <Link href='/spmb' className='inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-school-blue bg-school-blue px-3 py-3 text-xs font-semibold text-white transition-colors hover:border-school-navy hover:bg-school-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
+                  Informasi SPMB <span aria-hidden='true'>→</span>
                 </Link>
-                <Link href='/lmp' className='group flex flex-col gap-2 rounded-2xl border border-sky-200 bg-white p-4 text-left transition hover:border-sky-400 hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:p-5'>
-                  <span className='flex items-center justify-between gap-2 text-base font-bold text-school-navy'><span><span className='hidden sm:inline'>Informasi </span>LMP</span><span aria-hidden='true' className='text-base text-school-blue transition-transform group-hover:translate-x-1'>→</span></span>
-                  <span className='text-xs leading-5 text-slate-600 sm:text-[13px]'>(Lomba Mata Pelajaran)</span>
+                <Link href='/lmp' aria-describedby='hero-lmp-description' className='inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-school-blue bg-white px-3 py-3 text-xs font-semibold text-school-blue transition-colors hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-school-blue sm:text-sm'>
+                  Informasi LMP <span aria-hidden='true'>→</span>
                 </Link>
+                <p id='hero-lmp-description' className='col-start-2 text-center text-xs leading-5 text-slate-500'>(Lomba Mata Pelajaran)</p>
               </div>
               <div className='mt-3 flex flex-wrap items-center gap-x-6 gap-y-1'>
                 <a href='#tentang' className='inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-school-blue underline-offset-4 hover:underline sm:text-sm'>Kenali sekolah kami <span aria-hidden='true'>→</span></a>
