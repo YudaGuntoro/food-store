@@ -67,6 +67,24 @@ public class ContentService(IContentRepository repository, IApplicationUnitOfWor
         var entries = await repository.SelectAsync(x => new { x.Collection, x.Title, x.Slug, x.Category, x.CoachName, x.Summary, x.Body, x.ImageId, x.ImageUrl, x.PostUrl, x.PublishedAt, x.SortOrder }, x => x.Status == "Published" && x.PublishedAt <= now, x => x.PublishedAt!, descending: true, thenBy: x => x.Id);
         return ApiOk(entries.Select(x => new { x.Collection, x.Title, x.Slug, x.Category, x.CoachName, x.Summary, x.Body, imageUrl = ImageUrl(x.ImageId, x.ImageUrl), x.PostUrl, x.PublishedAt, x.SortOrder }));
     }
+    public async Task<ServiceResult> Achievements(int offset = 0, int limit = 8, string? query = null) {
+        var search = query?.Trim() ?? "";
+        if (offset < 0 || offset > 1000000 || limit is < 1 or > 8 || search.Length > 200)
+            return ApiBadRequest("Parameter pencarian prestasi tidak valid.");
+        var now = DateTime.UtcNow;
+        System.Linq.Expressions.Expression<Func<SchoolContent, bool>> filter = x =>
+            x.Collection == "prestasi" && x.Status == "Published" && x.PublishedAt <= now
+            && (search == "" || x.Title.Contains(search) || x.Category.Contains(search));
+        var total = await repository.CountAsync(filter);
+        var entries = await repository.SelectAsync(x => new { x.Slug, x.Title, x.Category, x.Summary, x.Body, x.ImageId, x.ImageUrl },
+            filter, x => x.PublishedAt!, descending: true, skip: offset, take: limit, thenBy: x => x.Id);
+        return ApiOk(new {
+            items = entries.Select(x => new { x.Slug, x.Title, level = x.Category,
+                body = string.Join("\n\n", new[] { x.Summary, x.Body != x.Summary ? x.Body : "" }.Where(s => !string.IsNullOrWhiteSpace(s))),
+                image = ImageUrl(x.ImageId, x.ImageUrl) }),
+            total
+        });
+    }
     private static bool ValidPostUrl(string collection, string? value)
     {
         if (collection is not ("instagram" or "tiktok")) return string.IsNullOrEmpty(value);

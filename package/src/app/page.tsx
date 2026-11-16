@@ -295,7 +295,7 @@ export default async function Home() {
           </div>
           <div className='mt-6 text-center sm:mt-9'>
             <Link href='/prestasi' className='inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-5 py-3 text-sm font-bold text-school-blue shadow-sm transition hover:border-school-blue hover:bg-sky-50'>
-              Lihat Prestasi Terbaru <span aria-hidden='true'>→</span>
+              Lihat Semua Prestasi <span aria-hidden='true'>→</span>
             </Link>
           </div>
         </div>

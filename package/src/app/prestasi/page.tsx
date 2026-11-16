@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import AchievementGrid from './AchievementGrid'
-import { getSchoolContent } from '../cms-content'
+import { getAchievements } from './data'
 
 export const metadata: Metadata = {
   title: 'Prestasi Murid',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 
 export default async function PrestasiPage() {
-  const { achievements } = await getSchoolContent()
+  const initialPage = await getAchievements()
   return (
     <main className='min-h-[70vh] bg-[#f6f9fc]'>
       <section className='relative isolate overflow-hidden border-b border-slate-200/70 bg-[#f7faff]'>
@@ -23,12 +23,12 @@ export default async function PrestasiPage() {
             </div>
             <div className='border-l-2 border-sky-300 py-1 pl-5 sm:pl-6'>
               <p className='font-bold leading-6 text-school-navy'>Daftar prestasi SMPIT Cendekia Purwakarta.</p>
-              <p className='mt-3 text-sm leading-7 text-slate-600 sm:text-base'>4 prestasi murid terbaru.</p>
+              <p className='mt-3 text-sm leading-7 text-slate-600 sm:text-base'>Jelajahi seluruh prestasi murid, mulai dari yang terbaru.</p>
               <Link href='/#prestasi' className='mt-4 inline-flex items-center gap-2 text-sm font-bold text-school-blue transition hover:text-school-navy'>Kembali ke beranda <span aria-hidden='true'>↗</span></Link>
             </div>
           </div>
           <div className='mt-10 sm:mt-12'>
-            <AchievementGrid achievements={achievements.slice(0, 4)} />
+            <AchievementGrid initialPage={initialPage} />
           </div>
         </div>
       </section>

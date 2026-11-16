@@ -1,5 +1,11 @@
 # Arsitektur backend dan normalisasi database
 
+## Daftar prestasi bertahap
+
+Halaman publik `/prestasi` memuat 8 kartu pertama melalui `/api/school/achievements?offset=0&limit=8`. Tombol Lihat lebih banyak mengambil 4 kartu berikutnya. Filter koleksi/publikasi/tanggal dan pencarian judul/kategori diterapkan di Application melalui repository; `CountAsync` dan proyeksi `SelectAsync` dengan Skip/Take dijalankan di database. Respons hanya berisi `items` (slug, judul, kategori, cerita dan URL foto) serta `total`, tanpa BLOB atau field staf. Urutan tanggal publikasi dan Id menurun memberi urutan tetap untuk tanggal yang sama. Pencarian mencakup seluruh prestasi terbit, bukan hanya kartu yang sudah dimuat. API membatasi limit maksimal 8 dan panjang pencarian 200 karakter; respons no-store.
+
+Beranda tetap menampilkan 4 prestasi terbaru. Deploy API dan website bersama untuk endpoint baru; tidak ada migrasi database. Pemeriksaan UI dengan upstream fixture tanpa database: dari `package`, jalankan `node scripts/check-achievements.mjs` (Playwright lokal di `.verify-cms`; opsional `BROWSER_CHANNEL=chrome`).
+
 ## Hasil audit
 
 Sebelumnya repository generik tersedia, tetapi sebagian besar controller CMS, SPMB, dan LMP masih menggunakan DbContext langsung. Filter EF, transaksi, aturan pendaftaran, dan pemetaan respons bercampur dalam controller. Beberapa konfigurasi terstruktur disimpan sebagai satu JSON besar.

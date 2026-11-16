@@ -38,4 +38,9 @@ public class SchoolPublicController(ContentService service) : ApiControllerBase
         return File(image.Content, image.ContentType);
     }
     [AllowAnonymous, HttpGet("content")] public async Task<IActionResult> Published() => FromService(await service.Published());
+    [AllowAnonymous, HttpGet("achievements")]
+    public async Task<IActionResult> Achievements([FromQuery] int offset = 0, [FromQuery] int limit = 8, [FromQuery] string? query = null) {
+        Response.Headers.CacheControl = "no-store";
+        return FromService(await service.Achievements(offset, limit, query));
+    }
 }
