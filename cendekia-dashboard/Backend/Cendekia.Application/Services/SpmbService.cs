@@ -40,7 +40,7 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
             return ApiBadRequest("Masukkan nama lengkap dan NISN 10 digit sesuai data pendaftaran.");
         // Exact identity pair only. Project public fields without loading family profiles or files.
         var matches = await repository.Applications.SelectAsync(
-            x => new { x.RegistrationNumber, x.StudentName, x.Nisn, x.AcademicYear, x.WaveNumber, x.SubmittedAt, x.PreviousSchool, x.TargetGrade, x.Status, x.PaymentStatus },
+            x => new { x.RegistrationNumber, x.StudentName, x.Nisn, x.AcademicYear, x.WaveNumber, hasAcceptanceLetter = x.Status == "Diterima" && x.AcceptanceLetter != null, x.SubmittedAt, x.PreviousSchool, x.TargetGrade, x.Status, x.PaymentStatus },
             x => x.Nisn == nisn && x.StudentName.Trim().ToLower() == name,
             x => x.SubmittedAt, descending: true, take: 1, thenBy: x => x.Id, cancellationToken: cancellationToken);
         var entry = matches.SingleOrDefault();
@@ -48,7 +48,7 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
         var group = await repository.Groups.FirstAsync(g => g.AcademicYear == entry.AcademicYear && g.WaveNumber == entry.WaveNumber, cancellationToken: cancellationToken);
         return ApiOk(new { found = true, registration = new {
             entry.RegistrationNumber, entry.StudentName, entry.Nisn, entry.AcademicYear, entry.WaveNumber,
-            entry.SubmittedAt, entry.PreviousSchool, entry.TargetGrade, entry.Status, entry.PaymentStatus,
+            entry.SubmittedAt, entry.PreviousSchool, entry.TargetGrade, entry.Status, entry.PaymentStatus, entry.hasAcceptanceLetter,
             whatsappGroupUrl = group?.WhatsappGroupUrl ?? ""
         } });
     }
@@ -210,7 +210,7 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
         var proof = await repository.GetPaymentProofInfoAsync(id);
         var hasDocument = await repository.HasDocumentAsync(id);
         var profile = await repository.GetProfileAsync(id);
-        var entry = (await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.AcademicYear, x.WaveNumber, WaveStartDate = x.Period.StartDate, WaveEndDate = x.Period.EndDate, x.StudentName, x.Nisn, x.BirthPlace, x.BirthDate, x.Gender, x.PreviousSchool, x.TargetGrade, x.GuardianName, x.GuardianPhone, x.GuardianEmail, x.Address, x.Status, x.PaymentStatus, x.SubmittedAt, x.UpdatedAt, x.Version, hasDocument, profile, transferAccountName = proof == null ? null : proof.AccountHolderName, hasPaymentProof = proof != null }, x => x.Id == id)).SingleOrDefault();
+        var entry = (await repository.Applications.SelectAsync(x => new { x.Id, x.RegistrationNumber, x.AcademicYear, x.WaveNumber, WaveStartDate = x.Period.StartDate, WaveEndDate = x.Period.EndDate, x.StudentName, x.Nisn, x.BirthPlace, x.BirthDate, x.Gender, x.PreviousSchool, x.TargetGrade, x.GuardianName, x.GuardianPhone, x.GuardianEmail, x.Address, x.Status, x.PaymentStatus, x.SubmittedAt, x.UpdatedAt, x.Version, hasAcceptanceLetter = x.AcceptanceLetter != null, hasDocument, profile, transferAccountName = proof == null ? null : proof.AccountHolderName, hasPaymentProof = proof != null }, x => x.Id == id)).SingleOrDefault();
         return entry is null ? ApiNotFound("Pendaftar tidak ditemukan.") : ApiOk(entry);
     }
     public async Task<ServiceResult> Document(int id)
@@ -227,17 +227,57 @@ public class SpmbService(ISpmbRepository repository, IApplicationUnitOfWork unit
         var proof = await repository.GetPaymentProofFileAsync(id);
         return proof is null ? ApiNotFound("Bukti transfer belum tersedia untuk pendaftar ini.") : ApiOk(new PaymentProofDownload($"{entry.RegistrationNumber}-bukti-transfer{PaymentProofFiles.Extension(proof.ContentType)}", proof.ContentType, proof.Content));
     }
-    public async Task<ServiceResult> Status(int id, SpmbStatusRequest request)
+    public async Task<ServiceResult> AcceptanceLetter(int id)
     {
-        var entry = await repository.Applications.FirstAsync(x => x.Id == id, tracking: true);
+        var entry = await repository.Applications.FirstAsync(x => x.Id == id);
+        if (entry is null) return ApiNotFound();
+        var bytes = await repository.GetAcceptanceLetterAsync(id);
+        return bytes is null ? ApiNotFound("Surat penerimaan belum tersedia.") : ApiOk(new FileDownload($"{entry.RegistrationNumber}-surat-diterima.pdf", bytes));
+    }
+    public async Task<ServiceResult> PublicAcceptanceLetter(SpmbLookupRequest request, CancellationToken cancellationToken = default)
+    {
+        var name = request.StudentName.Trim().ToLowerInvariant();
+        var nisn = request.Nisn.Trim();
+        if (name.Length is < 2 or > 150 || !System.Text.RegularExpressions.Regex.IsMatch(nisn, "^[0-9]{10}$"))
+            return ApiBadRequest("Masukkan nama lengkap dan NISN 10 digit sesuai data pendaftaran.");
+        var entry = (await repository.Applications.SelectAsync(x => new { x.Id, x.Status },
+            x => x.Nisn == nisn && x.StudentName.Trim().ToLower() == name,
+            x => x.SubmittedAt, descending: true, take: 1, thenBy: x => x.Id, cancellationToken: cancellationToken)).SingleOrDefault();
+        if (entry is null || entry.Status != "Diterima") return ApiNotFound("Surat penerimaan belum tersedia.");
+        return await AcceptanceLetter(entry.Id);
+    }
+    public async Task<ServiceResult> Status(int id, SpmbStatusRequest request, PdfUpload? acceptanceLetter = null, CancellationToken cancellationToken = default)
+    {
+        if (acceptanceLetter is not null && (request.Status != "Diterima" ||
+            acceptanceLetter.Content.Length is < 8 or > 1048576 ||
+            !Path.GetExtension(acceptanceLetter.FileName).Equals(".pdf", StringComparison.OrdinalIgnoreCase) ||
+            !acceptanceLetter.Content.AsSpan(0, 5).SequenceEqual("%PDF-"u8)))
+            return ApiBadRequest("Surat diterima harus berupa PDF yang valid, maksimal 1 MB, untuk status Diterima.");
+        var compressed = acceptanceLetter is null ? null : await fileOptimizer.CompressPdfAsync(acceptanceLetter.Content, cancellationToken);
+        await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+        var entry = await repository.Applications.FirstAsync(x => x.Id == id, tracking: true, cancellationToken: cancellationToken);
         if (entry is null) return ApiNotFound();
         if (entry.Version != request.Version) return Conflict("Data sudah berubah. Buka ulang detail pendaftar.");
+        var hasLetter = await repository.AcceptanceLetters.AnyAsync(x => x.ApplicationId == id, cancellationToken);
+        if (request.Status == "Diterima" && !hasLetter && compressed is null)
+            return ApiBadRequest("Unggah surat diterima dalam format PDF sebelum menyimpan status Diterima.");
+        // Reserve the applicant version before touching the one-to-one file. A stale
+        // concurrent upload must return 409 rather than insert/overwrite a letter.
         entry.Status = request.Status;
         if (request.PaymentStatus is not null) entry.PaymentStatus = request.PaymentStatus;
         entry.UpdatedAt = DateTime.UtcNow; entry.Version++;
-        try { await unitOfWork.SaveChangesAsync(); }
+        try {
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (compressed is not null) {
+                var letter = await repository.AcceptanceLetters.FirstAsync(x => x.ApplicationId == id, tracking: true, cancellationToken: cancellationToken);
+                if (letter is null) { letter = new SpmbAcceptanceLetter { ApplicationId = id }; repository.AcceptanceLetters.Add(letter); }
+                letter.Content = compressed.Content; letter.Compression = compressed.Compression; letter.OriginalLength = compressed.OriginalLength;
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            await transaction.CommitAsync(cancellationToken);
+        }
         catch (StorageConcurrencyException) { return Conflict("Data sudah berubah. Buka ulang detail pendaftar."); }
-        return ApiOk(new { entry.Status, entry.PaymentStatus, entry.Version }, "Status pendaftaran disimpan.");
+        return ApiOk(new { entry.Status, entry.PaymentStatus, entry.Version, hasAcceptanceLetter = hasLetter || compressed is not null }, "Status pendaftaran disimpan.");
     }
     public async Task<ServiceResult> Delete(int id, SpmbDeleteRequest request, CancellationToken cancellationToken = default)
     {

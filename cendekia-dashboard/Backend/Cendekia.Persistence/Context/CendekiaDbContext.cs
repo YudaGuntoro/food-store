@@ -58,6 +58,12 @@ public class CendekiaDbContext : DbContext
             e.Property(x => x.HeightCm).HasPrecision(5, 1); e.Property(x => x.WeightKg).HasPrecision(5, 1);
             e.HasOne<SpmbApplication>().WithOne(x => x.Profile).HasForeignKey<SpmbApplicantProfile>(x => x.ApplicationId).OnDelete(DeleteBehavior.Cascade);
         });
+        modelBuilder.Entity<SpmbAcceptanceLetter>(e => {
+            e.ToTable("spmb_acceptance_letters"); e.HasKey(x => x.ApplicationId);
+            e.Property(x => x.Content).HasColumnType("mediumblob");
+            e.Property(x => x.Compression).HasMaxLength(10);
+            e.HasOne<SpmbApplication>().WithOne(x => x.AcceptanceLetter).HasForeignKey<SpmbAcceptanceLetter>(x => x.ApplicationId).OnDelete(DeleteBehavior.Cascade);
+        });
         modelBuilder.Entity<SpmbDocument>(e => {
             e.ToTable("spmb_application_documents"); e.HasKey(x => x.ApplicationId);
             e.Property(x => x.Content).HasColumnType("mediumblob");

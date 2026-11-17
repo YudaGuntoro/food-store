@@ -58,21 +58,31 @@ public sealed class ApplicationUnitOfWork(CendekiaDbContext db) : IApplicationUn
 }
 public sealed class SpmbRepository(CendekiaDbContext db) : ISpmbRepository
 {
+    public IEntityRepository<SpmbAcceptanceLetter> AcceptanceLetters { get; } = new EntityRepository<SpmbAcceptanceLetter>(db);
+    public async Task<byte[]?> GetAcceptanceLetterAsync(int applicationId)
+    {
+        var letter = await db.Set<SpmbAcceptanceLetter>().AsNoTracking().SingleOrDefaultAsync(x => x.ApplicationId == applicationId);
+        return letter is null ? null : await DecodePdf(letter.Content, letter.Compression, letter.OriginalLength);
+    }
     public Task<SpmbApplicantProfile?> GetProfileAsync(int applicationId) => db.Set<SpmbApplicantProfile>().AsNoTracking().SingleOrDefaultAsync(x => x.ApplicationId == applicationId);
     public Task<bool> HasDocumentAsync(int applicationId) => db.Set<SpmbDocument>().AnyAsync(x => x.ApplicationId == applicationId);
     public async Task<byte[]?> GetDocumentAsync(int applicationId)
     {
         var document = await db.Set<SpmbDocument>().AsNoTracking().SingleOrDefaultAsync(x => x.ApplicationId == applicationId);
         if (document is null) return null;
-        if (document.OriginalLength is < 1 or > 1048576) throw new InvalidDataException("Invalid PDF storage length.");
-        if (document.Compression == "raw") {
-            if (document.Content.Length != document.OriginalLength) throw new InvalidDataException("Invalid PDF storage length.");
-            return document.Content;
+        return await DecodePdf(document.Content, document.Compression, document.OriginalLength);
+    }
+    private static async Task<byte[]> DecodePdf(byte[] content, string compression, int originalLength)
+    {
+        if (originalLength is < 1 or > 1048576) throw new InvalidDataException("Invalid PDF storage length.");
+        if (compression == "raw") {
+            if (content.Length != originalLength) throw new InvalidDataException("Invalid PDF storage length.");
+            return content;
         }
-        if (document.Compression != "br") throw new InvalidDataException("Unknown PDF storage compression.");
-        using var input = new MemoryStream(document.Content);
+        if (compression != "br") throw new InvalidDataException("Unknown PDF storage compression.");
+        using var input = new MemoryStream(content);
         using var decompressor = new BrotliStream(input, CompressionMode.Decompress);
-        var bytes = new byte[document.OriginalLength];
+        var bytes = new byte[originalLength];
         await decompressor.ReadExactlyAsync(bytes);
         if (decompressor.ReadByte() != -1) throw new InvalidDataException("Expanded PDF exceeds stored length.");
         return bytes;

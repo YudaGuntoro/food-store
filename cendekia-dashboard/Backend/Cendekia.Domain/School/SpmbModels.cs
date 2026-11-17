@@ -44,6 +44,7 @@ public class SpmbApplication
 {
     public SpmbApplicantProfile? Profile { get; set; }
     public SpmbDocument? Document { get; set; }
+    public SpmbAcceptanceLetter? AcceptanceLetter { get; set; }
     public SpmbPaymentProof? PaymentProof { get; set; }
     public int Id { get; set; }
     public Guid SubmissionKey { get; set; }
@@ -142,6 +143,13 @@ public class SpmbLookupRequest
 }
 
 public class SpmbDocument
+{
+    public int ApplicationId { get; set; }
+    public byte[] Content { get; set; } = [];
+    public string Compression { get; set; } = "raw";
+    public int OriginalLength { get; set; }
+}
+public class SpmbAcceptanceLetter
 {
     public int ApplicationId { get; set; }
     public byte[] Content { get; set; } = [];

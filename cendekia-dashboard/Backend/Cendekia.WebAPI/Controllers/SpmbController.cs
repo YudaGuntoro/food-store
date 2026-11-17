@@ -56,7 +56,29 @@ public class SpmbController(SpmbService service) : ApiControllerBase
     }
     [HttpGet("applications")] public async Task<IActionResult> Applications(string? year, int? wave, string? status, string? search, int page = 1, int limit = 10, string? payment = null) => FromService(await service.Applications(year, wave, status, search, page, limit, payment));
     [HttpGet("applications/{id:int}")] public async Task<IActionResult> Detail(int id) => FromService(await service.Detail(id));
-    [HttpPut("applications/{id:int}/status")] public async Task<IActionResult> Status(int id, SpmbStatusRequest request) => FromService(await service.Status(id, request));
+    [HttpPut("applications/{id:int}/status"), Consumes("application/json")]
+    public async Task<IActionResult> Status(int id, SpmbStatusRequest request) => FromService(await service.Status(id, request, cancellationToken: HttpContext.RequestAborted));
+    [HttpPut("applications/{id:int}/status"), Consumes("multipart/form-data"), RequestSizeLimit(1100000), RequestFormLimits(MultipartBodyLengthLimit = 1100000)]
+    public async Task<IActionResult> StatusWithLetter(int id, [FromForm] SpmbStatusRequest request, IFormFile? acceptanceLetter)
+    {
+        PdfUpload? upload = null;
+        if (acceptanceLetter is not null) {
+            if (acceptanceLetter.Length > 1048576) return ApiBadRequest("Surat diterima maksimal 1 MB.");
+            using var stream = new MemoryStream(); await acceptanceLetter.CopyToAsync(stream, HttpContext.RequestAborted);
+            upload = new PdfUpload(acceptanceLetter.FileName, stream.ToArray());
+        }
+        return FromService(await service.Status(id, request, upload, HttpContext.RequestAborted));
+    }
+    [HttpGet("applications/{id:int}/acceptance-letter")]
+    public async Task<IActionResult> AcceptanceLetter(int id) => LetterFile(await service.AcceptanceLetter(id));
+    [HttpPost("acceptance-letter"), AllowAnonymous, EnableRateLimiting("registration-lookup"), Consumes("application/json"), RequestSizeLimit(2048)]
+    public async Task<IActionResult> PublicAcceptanceLetter(SpmbLookupRequest request) => LetterFile(await service.PublicAcceptanceLetter(request, HttpContext.RequestAborted));
+    private IActionResult LetterFile(Cendekia.Application.ServiceResult result)
+    {
+        Response.Headers.CacheControl = "no-store"; Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+        Response.Headers["X-Content-Type-Options"] = "nosniff";
+        return result.Data is FileDownload download ? File(download.Content, "application/pdf", download.FileName) : FromService(result);
+    }
     [HttpDelete("applications/{id:int}"), Consumes("application/json"), RequestSizeLimit(2048)]
     public async Task<IActionResult> Delete(int id, SpmbDeleteRequest request) => FromService(await service.Delete(id, request, HttpContext.RequestAborted));
 }

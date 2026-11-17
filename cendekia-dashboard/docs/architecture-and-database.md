@@ -1,5 +1,15 @@
 # Arsitektur backend dan normalisasi database
 
+## Surat penerimaan SPMB
+
+Saat staf memilih Diterima di detail pendaftar, Upload surat diterima muncul tepat di bawah dropdown. PDF valid (ekstensi .pdf dan signature %PDF-, maksimal 1 MiB) wajib dipilih sebelum menyimpan jika belum ada surat tersimpan. Berkas dapat diganti. Surat tersimpan dapat dipakai kembali saat mengubah pembayaran; data lama yang sudah Diterima tanpa surat tidak diubah massal. Penyimpanan berikutnya sebagai Diterima wajib melengkapi surat. Menutup/membuka detail mereset pilihan berkas.
+
+`PUT /api/spmb/applications/{id}/status` menerima multipart status/paymentStatus/version/acceptanceLetter, dengan JSON lama tetap didukung. Validasi wajib surat ada di Application, termasuk untuk klien JSON. Transaksi menyimpan status, pembayaran, Version dan surat bersama; update versi dilakukan sebelum insert/update surat agar unggahan bersamaan yang basi menghasilkan 409 tanpa menimpa berkas. Metadata detail/lookup hanya membawa hasAcceptanceLetter, tidak ada BLOB dalam list. `spmb_acceptance_letters` memakai PK/FK ApplicationId cascade dan kompresi raw/Brotli lossless yang sama dengan PDF persyaratan. Penghapusan pendaftar menghapus surat; perubahan status mempertahankan arsip surat untuk staf.
+
+Staf mengunduh lewat GET `/api/spmb/applications/{id}/acceptance-letter` dengan otorisasi. Pendaftar mengunduh lewat POST `/api/spmb/acceptance-letter` menggunakan nama lengkap + NISN yang sama dengan cek status, hanya untuk pendaftaran terbaru yang cocok dan berstatus Diterima. Tidak menerima Id atau nomor pendaftaran sebagai akses publik, dan tidak menaruh identitas di URL. Rate limit sama dengan lookup; respons no-store/noindex/nosniff. Proxy website meneruskan PDF sebagai attachment, tombol hanya muncul pada kartu DITERIMA dengan surat tersedia dan disembunyikan saat cetak. Pengunduhan memeriksa ulang status sehingga hasil lookup yang sudah basi tidak membuka surat setelah keputusan berubah.
+
+Sebelum deploy, backup database dan jalankan `database/migrations/20261117_spmb_acceptance_letters.sql` (idempotent; tidak mengubah pendaftar). Runner lokal `scripts/init-local-db.ps1 -NormalizeOnly` menyertakannya. Deploy API, portal admin dan website bersama. Migrasi lokal tidak berarti server produksi sudah dimigrasi. Verifikasi dari dashboard: `node scripts/check-spmb-acceptance-letter.mjs`; hanya fixture sendiri yang dibuat/dihapus, pendaftar dan periode asli diperiksa tetap utuh.
+
 ## Hapus pendaftar LMP dan SPMB
 
 Kolom Aksi pada `/lmp/pendaftar` dan `/spmb/pendaftar` memuat detail dan ikon hapus. Dialog menyebut nama/nomor pendaftar, menjelaskan penghapusan permanen, dan mewajibkan checkbox sebelum tombol Hapus aktif. Checkbox direset setiap dialog dibuka atau permintaan gagal. Akun ADMIN/SUPERVISOR/OPERATOR mengikuti otorisasi pendaftaran yang sudah ada; tombol disembunyikan bagi akun lain.

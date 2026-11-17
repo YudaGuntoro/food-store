@@ -25,6 +25,8 @@ public interface IApplicationUnitOfWork
 }
 public interface ISpmbRepository
 {
+    IEntityRepository<SpmbAcceptanceLetter> AcceptanceLetters { get; }
+    Task<byte[]?> GetAcceptanceLetterAsync(int applicationId);
     Task<SpmbApplicantProfile?> GetProfileAsync(int applicationId);
     Task<bool> HasDocumentAsync(int applicationId);
     Task<byte[]?> GetDocumentAsync(int applicationId);

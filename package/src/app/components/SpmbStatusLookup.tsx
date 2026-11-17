@@ -6,7 +6,7 @@ import { registrationControlClass } from './RegistrationControls'
 
 type Registration = {
   registrationNumber: string; studentName: string; nisn: string; academicYear: string; waveNumber: number;
-  submittedAt: string; previousSchool: string; targetGrade: string; status: string; paymentStatus: string; whatsappGroupUrl: string;
+  submittedAt: string; previousSchool: string; targetGrade: string; status: string; paymentStatus: string; whatsappGroupUrl: string; hasAcceptanceLetter: boolean;
 }
 type LookupResult = { found: false } | { found: true; registration: Registration }
 const statusDetails: Record<string, { message: string; badge: string; card: string; accent: string }> = {
@@ -29,6 +29,8 @@ const statusDetails: Record<string, { message: string; badge: string; card: stri
 }
 
 export default function SpmbStatusLookup() {
+  const [downloading, setDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState('')
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<LookupResult | null>(null)
   const [error, setError] = useState('')
@@ -41,9 +43,9 @@ export default function SpmbStatusLookup() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (busy) return
+    if (busy || downloading) return
     const fields = new FormData(event.currentTarget)
-    setBusy(true); setError(''); setResult(null)
+    setBusy(true); setError(''); setDownloadError(''); setResult(null)
     try {
       const response = await fetch('/api/spmb/check-status', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store',
@@ -58,6 +60,25 @@ export default function SpmbStatusLookup() {
   }
 
   const registration = result?.found ? result.registration : null
+  async function downloadLetter() {
+    if (!registration || downloading) return
+    setDownloading(true); setDownloadError('')
+    try {
+      const response = await fetch('/api/spmb/acceptance-letter', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store',
+        body: JSON.stringify({ studentName: registration.studentName, nisn: registration.nisn }), signal: AbortSignal.timeout(15000),
+      })
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null)
+        throw new Error(payload?.message || 'Surat belum dapat diunduh. Silakan cek status kembali atau hubungi admin sekolah.')
+      }
+      const url = URL.createObjectURL(await response.blob())
+      const link = document.createElement('a'); link.href = url
+      link.download = `${registration.registrationNumber.replace(/[^A-Za-z0-9-]/g, '')}-surat-diterima.pdf`; link.click()
+      setTimeout(() => URL.revokeObjectURL(url), 10000)
+    } catch (e) { setDownloadError(e instanceof Error && e.name !== 'TimeoutError' ? e.message : 'Unduhan terlalu lama. Silakan coba kembali.') }
+    finally { setDownloading(false) }
+  }
   const presentation = statusDetails[registration?.status || ''] || {
     message: 'Silakan hubungi admin sekolah untuk informasi status pendaftaran.',
     badge: 'bg-slate-100 text-slate-700', card: 'border-slate-200 bg-slate-50 text-slate-700', accent: 'border-t-slate-400',
@@ -80,7 +101,7 @@ export default function SpmbStatusLookup() {
         </label>
       </div>
       <p className='mt-4 text-xs leading-6 text-slate-500'>Gunakan nama lengkap dan NISN yang sama dengan formulir pendaftaran. Hasil menampilkan pendaftaran terbaru yang cocok.</p>
-      <button disabled={busy} type='submit' className='mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-school-blue px-5 py-3 text-sm font-semibold text-white hover:bg-school-navy disabled:cursor-wait disabled:opacity-60'>
+      <button disabled={busy || downloading} type='submit' className='mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-school-blue px-5 py-3 text-sm font-semibold text-white hover:bg-school-navy disabled:cursor-wait disabled:opacity-60'>
         <svg viewBox='0 0 24 24' className='h-5 w-5' fill='none' stroke='currentColor' strokeWidth='1.8' aria-hidden='true'><circle cx='10.5' cy='10.5' r='6.5' /><path d='m16 16 5 5' strokeLinecap='round' /></svg>
         {busy ? 'Memeriksa…' : 'Cek Status Pendaftaran'}
       </button>
@@ -102,6 +123,11 @@ export default function SpmbStatusLookup() {
         <p className='text-xs font-semibold uppercase tracking-[.16em]'>Status pendaftaran</p>
         <h3 id='spmb-admission-status' className='mt-2 text-3xl font-black tracking-wide sm:text-4xl'>{registration.status.toLocaleUpperCase('id-ID')}</h3>
         <p className='mx-auto mt-3 max-w-xl text-sm leading-7'>{presentation.message}</p>
+        {registration.status === 'Diterima' && registration.hasAcceptanceLetter && <button type='button' disabled={downloading} onClick={() => void downloadLetter()} className='receipt-no-print mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-700 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60'>
+          <svg viewBox='0 0 24 24' className='h-5 w-5' fill='none' stroke='currentColor' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5' /></svg>
+          {downloading ? 'Mengunduh?' : 'Unduh surat diterima (PDF)'}
+        </button>}
+        {downloadError && <p role='alert' className='receipt-no-print mt-3 text-sm text-red-700'>{downloadError}</p>}
       </section>
       <dl className='grid gap-x-6 sm:grid-cols-2'>{details.map(([label, value]) => <div key={label} className='min-w-0 border-b border-slate-100 py-3'><dt className='text-xs text-slate-500'>{label}</dt><dd className='mt-1 break-words text-sm font-medium leading-6 text-school-navy'>{value}</dd></div>)}</dl>
       <aside aria-label='Informasi grup WhatsApp pendaftaran' className='mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-4 sm:p-5'>
