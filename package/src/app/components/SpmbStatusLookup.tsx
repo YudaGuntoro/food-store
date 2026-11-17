@@ -9,13 +9,24 @@ type Registration = {
   submittedAt: string; previousSchool: string; targetGrade: string; status: string; paymentStatus: string; whatsappGroupUrl: string;
 }
 type LookupResult = { found: false } | { found: true; registration: Registration }
-const statusText: Record<string, string> = {
-  Baru: 'Pendaftaran sudah diterima dan menunggu pemeriksaan staf sekolah.',
-  Diproses: 'Pendaftaran sedang diperiksa oleh staf sekolah.',
-  Diterima: 'Calon murid dinyatakan diterima. Hubungi panitia untuk tahapan berikutnya.',
-  Ditolak: 'Pendaftaran belum dapat diterima. Hubungi panitia untuk informasi lebih lanjut.',
+const statusDetails: Record<string, { message: string; badge: string; card: string; accent: string }> = {
+  Baru: {
+    message: 'Pendaftaran Anda sudah tercatat dan menunggu pemeriksaan admin sekolah. Silakan cek kembali secara berkala.',
+    badge: 'bg-amber-50 text-amber-800', card: 'border-amber-200 bg-amber-50 text-amber-900', accent: 'border-t-amber-500',
+  },
+  Diproses: {
+    message: 'Pendaftaran Anda masih dalam proses pemeriksaan. Silakan cek kembali secara berkala untuk mengetahui hasilnya.',
+    badge: 'bg-blue-50 text-blue-700', card: 'border-blue-200 bg-blue-50 text-blue-800', accent: 'border-t-blue-600',
+  },
+  Diterima: {
+    message: 'Selamat! Anda dinyatakan diterima. Silakan hubungi admin sekolah untuk informasi dan tahapan selanjutnya.',
+    badge: 'bg-emerald-50 text-emerald-800', card: 'border-emerald-200 bg-emerald-50 text-emerald-800', accent: 'border-t-emerald-600',
+  },
+  Ditolak: {
+    message: 'Mohon maaf, Anda dinyatakan ditolak. Silakan hubungi admin sekolah untuk informasi lebih lanjut.',
+    badge: 'bg-red-50 text-red-700', card: 'border-red-200 bg-red-50 text-red-800', accent: 'border-t-red-600',
+  },
 }
-const statusStyle: Record<string, string> = { Baru: 'bg-sky-50 text-school-blue', Diproses: 'bg-amber-50 text-amber-800', Diterima: 'bg-emerald-50 text-emerald-800', Ditolak: 'bg-rose-50 text-rose-800' }
 
 export default function SpmbStatusLookup() {
   const [busy, setBusy] = useState(false)
@@ -47,6 +58,10 @@ export default function SpmbStatusLookup() {
   }
 
   const registration = result?.found ? result.registration : null
+  const presentation = statusDetails[registration?.status || ''] || {
+    message: 'Silakan hubungi admin sekolah untuk informasi status pendaftaran.',
+    badge: 'bg-slate-100 text-slate-700', card: 'border-slate-200 bg-slate-50 text-slate-700', accent: 'border-t-slate-400',
+  }
   const details = registration ? [
     ['Nama lengkap calon murid', registration.studentName], ['NISN', registration.nisn],
     ['Asal sekolah', registration.previousSchool], ['Kelas yang dituju', `Kelas ${registration.targetGrade}`],
@@ -76,15 +91,19 @@ export default function SpmbStatusLookup() {
       <p className='mt-2 text-sm leading-7 text-amber-900'>Periksa kembali penulisan nama lengkap dan NISN. Jika Anda sudah mendaftar tetapi data belum ditemukan, hubungi panitia SPMB dengan membawa bukti pendaftaran.</p>
       <a href='/spmb#kontak-spmb' className='mt-3 inline-block text-sm font-semibold text-school-blue underline underline-offset-4'>Hubungi panitia</a>
     </section>}
-    {registration && <section className='registration-receipt mt-6 rounded-xl border border-slate-200 border-t-[3px] border-t-emerald-600 bg-white p-5 sm:p-7' aria-labelledby='lookup-result-heading'>
+    {registration && <section className={`registration-receipt mt-6 rounded-xl border border-slate-200 border-t-[3px] bg-white p-5 sm:p-7 ${presentation.accent}`} aria-labelledby='lookup-result-heading'>
       <p className='receipt-print-heading hidden'>SMPIT Cendekia Purwakarta — Bukti Pendaftaran SPMB</p>
       <div className='flex flex-wrap items-start justify-between gap-3'>
         <div><h2 ref={resultHeading} id='lookup-result-heading' tabIndex={-1} className='text-xl font-bold text-school-navy outline-none'>Calon murid sudah terdaftar</h2><p className='mt-2 text-sm leading-6 text-slate-500'>Data pendaftaran ditemukan dalam sistem sekolah.</p></div>
-        <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${statusStyle[registration.status] || 'bg-slate-100 text-slate-700'}`}>{registration.status}</span>
+        <span className={`rounded-full px-3 py-1.5 text-xs font-semibold ${presentation.badge}`}>{registration.status}</span>
       </div>
       <div className='my-5 rounded-lg border border-slate-200 bg-slate-50 p-4'><p className='text-xs text-slate-500'>Nomor pendaftaran</p><p className='mt-2 break-all font-mono text-xl font-bold text-school-navy'>{registration.registrationNumber}</p></div>
+      <section aria-labelledby='spmb-admission-status' className={`mb-5 rounded-xl border p-5 text-center sm:p-6 ${presentation.card}`}>
+        <p className='text-xs font-semibold uppercase tracking-[.16em]'>Status pendaftaran</p>
+        <h3 id='spmb-admission-status' className='mt-2 text-3xl font-black tracking-wide sm:text-4xl'>{registration.status.toLocaleUpperCase('id-ID')}</h3>
+        <p className='mx-auto mt-3 max-w-xl text-sm leading-7'>{presentation.message}</p>
+      </section>
       <dl className='grid gap-x-6 sm:grid-cols-2'>{details.map(([label, value]) => <div key={label} className='min-w-0 border-b border-slate-100 py-3'><dt className='text-xs text-slate-500'>{label}</dt><dd className='mt-1 break-words text-sm font-medium leading-6 text-school-navy'>{value}</dd></div>)}</dl>
-      <p className='mt-5 rounded-lg border border-sky-100 bg-sky-50 p-4 text-sm leading-7 text-school-navy'>{statusText[registration.status] || 'Hubungi panitia untuk informasi status pendaftaran.'}</p>
       <aside aria-label='Informasi grup WhatsApp pendaftaran' className='mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-4 sm:p-5'>
         <h3 className='font-semibold text-school-navy'>Grup WhatsApp Pendaftaran Gelombang {registration.waveNumber}</h3>
         {registration.whatsappGroupUrl ? <>
