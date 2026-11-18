@@ -1,0 +1,53 @@
+.page { background: #fffaf4; color: #153449; font-family: 'Outfit', sans-serif; }
+.header { max-width: 1240px; margin: auto; padding: 25px 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid #eddfd0; }
+.brand { display: flex; align-items: center; font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+.brand > span { display: grid; place-items: center; background: #f36820; color: white; border-radius: 14px; width: 44px; height: 44px; margin-right: 9px; }
+.brand strong { color: #ef6521; }
+.header nav { display: flex; gap: 26px; font-size: 14px; }
+.header nav a[aria-current] { color: #dc581b; }
+.hero { max-width: 1240px; margin: auto; padding: 66px 28px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center; }
+.eyebrow { text-transform: uppercase; letter-spacing: 2px; color: #cf5c29; font-size: 11px; font-weight: 600; }
+.hero h1 { font-family: 'Satisfy', cursive; font-weight: 400; font-size: clamp(38px, 4.7vw, 66px); line-height: 1.22; margin: 20px 0; }
+.hero h1 em { color: #ef6521; font-style: normal; }
+.hero p, .intro p, .callout p { font-size: 15px; line-height: 1.85; color: #7c756e; max-width: 510px; }
+.heroImage { position: relative; min-height: 390px; border-radius: 110px 24px 24px; overflow: hidden; }
+.heroImage img { object-fit: cover; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 15px 22px; border-radius: 30px; background: #ef6521; color: white; font-size: 14px; font-weight: 500; margin-top: 14px; }
+.button:hover { background: #cc5018; }
+.section { max-width: 1240px; margin: auto; padding: 20px 28px 65px; scroll-margin-top: 20px; }
+.intro { margin-bottom: 28px; }
+.intro h2, .callout h2 { font-size: 30px; font-weight: 600; line-height: 1.3; margin: 0 0 10px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.card { background: white; border: 1px solid #ebdfd2; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; }
+.cardImage { position: relative; aspect-ratio: 1.4; }
+.cardImage img { object-fit: cover; }
+.cardBody { padding: 22px; display: flex; flex: 1; flex-direction: column; align-items: flex-start; }
+.tag { font-size: 11px; padding: 5px 10px; background: #fff1e3; color: #b64c1e; border-radius: 20px; }
+.card h3 { margin: 14px 0 9px; font-size: 20px; font-weight: 600; line-height: 1.35; }
+.card p { font-size: 13px; line-height: 1.8; color: #84776b; margin: 0 0 18px; }
+.price { margin-top: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.price strong { color: #e95e1b; font-size: 23px; }
+.price del { color: #948679; font-size: 12px; }
+.saving { margin-top: 6px; color: #5e754b; font-size: 12px; }
+.card .button { width: 100%; }
+.callout { max-width: 1184px; margin: 0 auto 65px; padding: 34px; border-radius: 24px; background: #fff0df; border: 1px solid #f3d8bd; display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+.callout .button { flex-shrink: 0; margin: 0; }
+.callout p { margin-bottom: 0; }
+.footer { border-top: 1px solid #eadbcd; max-width: 1184px; margin: auto; padding: 26px 0; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; color: #827569; font-size: 13px; }
+.footer a { display: inline-flex; align-items: center; gap: 8px; }
+.page a:focus-visible { outline: 2px solid #e65f22; outline-offset: 5px; }
+@media(max-width: 800px) { .hero { gap: 28px; padding-top: 40px; }.heroImage { min-height: 320px; }.grid { grid-template-columns: repeat(2, 1fr); }.callout,.footer { margin-left: 24px; margin-right: 24px; }.header nav { gap: 16px; font-size: 12px; }.callout { flex-direction: column; align-items: flex-start; } }
+@media(max-width: 540px) { .header { padding: 18px; flex-wrap: wrap; gap: 18px; }.header nav { width: 100%; justify-content: space-between; gap: 10px; }.brand { font-size: 27px; }.hero { grid-template-columns: 1fr; padding: 32px 18px 38px; gap: 26px; }.heroImage { min-height: 270px; border-radius: 65px 20px 20px; }.hero h1 { font-size: 42px; }.hero p { font-size: 14px; }.section { padding: 16px 18px 38px; }.grid { gap: 12px; }.card { border-radius: 15px; }.cardBody { padding: 13px; }.card h3 { font-size: 16px; }.card p { font-size: 12px; }.price strong { font-size: 18px; }.card .button { padding: 12px 7px; font-size: 12px; gap: 7px; }.tag { font-size: 10px; padding: 4px 7px; }.intro h2,.callout h2 { font-size: 25px; }.callout { padding: 24px; margin: 0 18px 38px; }.footer { margin: 0 18px; flex-direction: column; gap: 14px; } }
+
+@media(max-width: 540px) { .header nav { flex-wrap: wrap; justify-content: flex-start; column-gap: 18px; row-gap: 12px; } }
+
+.heroDiscount { position: absolute; z-index: 1; bottom: 22px; left: 22px; width: 118px; height: 118px; border-radius: 50%; background: #ffe09a; border: 4px solid #fff2cf; box-shadow: 0 5px 18px #64301026; color: #934019; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-9deg); }
+.heroDiscount > span:first-child { font-size: 10px; font-weight: 650; letter-spacing: 1.5px; }
+.heroDiscount strong { font-size: 43px; line-height: 1.1; font-weight: 800; letter-spacing: -2px; }
+.heroDiscount small { font-size: 24px; letter-spacing: -1px; }
+.heroDiscount > span:last-child { font-size: 10px; }
+.discountBadge { position: absolute; z-index: 1; top: 12px; left: 12px; min-width: 80px; padding: 10px 12px 12px; border-radius: 13px 13px 20px 5px; background: #c52d23; color: #fff; border: 2px solid #fff5df; box-shadow: 0 4px 12px #54201745; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.discountBadge > span { font-size: 11px; font-weight: 650; letter-spacing: 1.2px; }
+.discountBadge strong { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+.discountBadge small { font-size: 20px; margin-left: 1px; }
+@media(max-width: 540px) { .heroDiscount { width: 98px; height: 98px; left: 16px; bottom: 16px; border-width: 3px; }.heroDiscount strong { font-size: 36px; }.heroDiscount small { font-size: 21px; }.heroDiscount > span:first-child { font-size: 9px; }.heroDiscount > span:last-child { font-size: 9px; }.discountBadge { top: 8px; left: 8px; min-width: 60px; padding: 7px 8px 9px; border-radius: 10px 10px 15px 4px; }.discountBadge > span { font-size: 9px; letter-spacing: .7px; }.discountBadge strong { font-size: 25px; }.discountBadge small { font-size: 16px; } }

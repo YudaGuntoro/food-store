@@ -1,0 +1,31 @@
+.food-datepicker-field { min-width: 0; }
+.food-datepicker-field > label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.food-datepicker-field .food-datepicker-optional { color: #9c8b7a; font-size: 10px; font-weight: 400; }
+.food-datepicker { position: relative; width: 100%; }
+.food-datepicker .flatpickr-wrapper { display: block; width: 100%; }
+.food-datepicker .food-datepicker-input { width: 100%; margin-top: 0; padding-right: 40px; border-radius: 8px; box-shadow: 0 1px 2px #10182808; }
+.food-datepicker-icon { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: #918579; pointer-events: none; }
+.food-datepicker .flatpickr-calendar { width: min(308px, calc(100vw - 56px)); box-sizing: border-box; padding: 14px; border: 1px solid #eee4d9; border-radius: 14px; background: #fff; box-shadow: 0 12px 30px #34291f1f; font-family: 'Outfit', sans-serif; }
+.food-datepicker .flatpickr-calendar.static { top: calc(100% + 7px); left: 0; z-index: 50; }
+.food-datepicker .flatpickr-calendar::before, .food-datepicker .flatpickr-calendar::after { display: none; }
+.food-datepicker .flatpickr-months { align-items: center; margin-bottom: 12px; }
+.food-datepicker .flatpickr-months .flatpickr-month { height: 33px; background: transparent; color: #344054; }
+.food-datepicker .flatpickr-current-month { height: 33px; padding-top: 3px; font-size: 14px; font-weight: 500; }
+.food-datepicker .flatpickr-current-month .cur-month { font-weight: 550; }
+.food-datepicker .flatpickr-current-month input.cur-year { font-size: 14px; min-height: 0; padding: 0 0 0 4px; border: 0; border-radius: 0; background: transparent; width: 100%; box-shadow: none; font-weight: 500; color: #344054; }
+.food-datepicker .flatpickr-months .flatpickr-prev-month, .food-datepicker .flatpickr-months .flatpickr-next-month { position: absolute; top: 13px; height: 30px; padding: 8px; fill: #667085; border-radius: 7px; }
+.food-datepicker .flatpickr-months .flatpickr-prev-month { left: 12px; }
+.food-datepicker .flatpickr-months .flatpickr-next-month { right: 12px; }
+.food-datepicker .flatpickr-months .flatpickr-prev-month:hover, .food-datepicker .flatpickr-months .flatpickr-next-month:hover { background: #fff1e3; }
+.food-datepicker .flatpickr-months svg { width: 11px; height: 11px; }
+.food-datepicker .flatpickr-weekdays { height: 28px; }
+.food-datepicker span.flatpickr-weekday { color: #98a2b3; font-size: 11px; font-weight: 500; background: transparent; }
+.food-datepicker .flatpickr-innerContainer, .food-datepicker .flatpickr-rContainer, .food-datepicker .flatpickr-days, .food-datepicker .dayContainer { width: 100%; min-width: 0; max-width: none; }
+.food-datepicker .dayContainer { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0; }
+.food-datepicker .flatpickr-day { width: 100%; max-width: none; height: 36px; line-height: 34px; margin: 0; border-radius: 8px; font-size: 12px; color: #475467; }
+.food-datepicker .flatpickr-day:hover, .food-datepicker .flatpickr-day:focus { background: #fff2e6; border-color: #fff2e6; }
+.food-datepicker .flatpickr-day.today { border-color: #e86723; color: #d15a1c; }
+.food-datepicker .flatpickr-day.selected, .food-datepicker .flatpickr-day.selected:hover { color: #fff; background: #e86723; border-color: #e86723; }
+.food-datepicker .flatpickr-day.prevMonthDay, .food-datepicker .flatpickr-day.nextMonthDay { color: #b8b5b0; }
+.food-datepicker .flatpickr-day.flatpickr-disabled, .food-datepicker .flatpickr-day.flatpickr-disabled:hover { color: #d0cdc8; background: transparent; border-color: transparent; cursor: not-allowed; }
+@media (max-width: 600px) { .food-datepicker .flatpickr-calendar { padding: 10px; } .food-datepicker .flatpickr-day { height: 34px; line-height: 32px; } }

@@ -1,47 +1,33 @@
-import { Inter } from 'next/font/google'
-import { Suspense } from 'react'
-import './globals.css'
-import './receipt-print.css'
-import Header from '@/app/components/Layout/Header'
-import Footer from '@/app/components/Layout/Footer'
-import ScrollToTop from '@/app/components/ScrollToTop'
-import ContactBubble from '@/app/components/ContactBubble'
-import SchoolStructuredData from './components/SchoolStructuredData'
-import { pageMetadata, schoolName, siteDescription, siteUrl } from './seo'
-
-const font = Inter({ subsets: ['latin'] })
-
-// Serve fresh page responses with Next.js's private, no-store cache policy.
-export const dynamic = 'force-dynamic'
-
-export const metadata = {
-  metadataBase: new URL(siteUrl),
-  applicationName: schoolName,
-  title: {
-    default: 'SMPIT Cendekia Purwakarta',
-    template: '%s | SMPIT Cendekia Purwakarta',
-  },
-  description: siteDescription,
-  openGraph: pageMetadata('/', schoolName).openGraph,
-  twitter: pageMetadata('/', schoolName).twitter,
-}
-
+import type { Metadata } from "next";
+import "./globals.css";
+import "flatpickr/dist/flatpickr.css";
+import "./header.css";
+import "./contact-badge.css";
+import "./cart-button.css";
+import "./favorites.css";
+import "./featured-menu.css";
+import "./catalog.css";
+import "./sharing-section.css";
+import "./promo.css";
+import "./family-gallery.css";
+import "./ordering-steps.css";
+import "./store-location.css";
+import "./footer-contact.css";
+import "./reservation.css";
+import "./date-picker.css";
+import "./payment.css";
+export const metadata: Metadata = {
+  metadataBase: new URL("https://foodstore.nusakaryadigital.com"),
+  title: "FoodStore — Rasa rumahan, untuk setiap momen",
+  description:
+    "Jelajahi pilihan nasi box, tumpeng, nasi kebuli, dan snack box FoodStore. Pilih menu favorit dan susun pesanan catering untuk acara Anda.",
+};
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='id' data-scroll-behavior='smooth'>
-      <body className={font.className}>
-        <Suspense fallback={null}><SchoolStructuredData /></Suspense>
-        <Header />
-        {/* Anchor async route hydration separately from the shared layout siblings. */}
-        <Suspense fallback={null}>{children}</Suspense>
-        <Footer />
-        <ContactBubble />
-        <ScrollToTop />
-      </body>
+    <html lang="id">
+      <body>{children}</body>
     </html>
-  )
+  );
 }

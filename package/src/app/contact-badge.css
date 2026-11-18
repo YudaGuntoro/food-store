@@ -1,0 +1,129 @@
+.consult-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 151px;
+  flex-shrink: 0;
+  color: #df5c1b;
+  padding: 0;
+  transition: transform 0.2s;
+}
+.contact-badge-label {
+  display: block;
+  border: 1px solid #f9ceaf;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: #fff6ef;
+  font-size: 9px;
+  line-height: 1.2;
+  padding: 4px 12px 5px;
+  margin-bottom: -3px;
+}
+.contact-badge-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  background: var(--orange);
+  color: white;
+  border-radius: 9px;
+  padding: 9px 10px;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.25px;
+  box-shadow: 0 3px 0 #c9511c;
+  white-space: nowrap;
+}
+.contact-badge-number svg {
+  stroke-width: 2.3;
+}
+.consult-link:hover {
+  transform: translateY(-2px);
+}
+.consult-link:hover .contact-badge-number {
+  background: #d95519;
+}
+@media (max-width: 1150px) {
+  .consult-link {
+    width: 136px;
+  }
+  .contact-badge-number {
+    font-size: 12px;
+    gap: 6px;
+    padding-inline: 8px;
+  }
+}
+@media (min-width: 701px) and (max-width: 900px) {
+  .header-main {
+    grid-template-columns: 178px minmax(120px, 1fr) auto;
+    gap: 16px;
+  }
+  .header .brand {
+    font-size: 25px;
+  }
+  .brand-tagline {
+    font-size: 7px;
+  }
+  .consult-link {
+    width: 127px;
+  }
+  .contact-badge-number {
+    font-size: 11px;
+  }
+}
+@media (max-width: 700px) {
+  .nav {
+    position: relative;
+    display: flex;
+    height: 0;
+    padding: 0;
+    border-top: 0;
+  }
+  .nav .nav-links {
+    display: none;
+  }
+  .nav.is-open {
+    display: flex;
+    height: auto;
+    padding: 8px 0 14px;
+    align-items: stretch;
+  }
+  .nav.is-open .nav-links {
+    display: grid;
+  }
+  .header-main {
+    position: relative;
+  }
+  .consult-link {
+    position: absolute;
+    top: -59px;
+    bottom: auto;
+    right: 0;
+    width: 125px;
+  }
+  .search {
+    width: calc(100% - 137px);
+  }
+  .contact-badge-label {
+    font-size: 8px;
+    padding: 3px 10px 4px;
+  }
+  .contact-badge-number {
+    font-size: 11px;
+    padding: 8px 6px;
+    gap: 5px;
+    border-radius: 8px;
+  }
+  .contact-badge-number svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .consult-link {
+    transition: none;
+  }
+}

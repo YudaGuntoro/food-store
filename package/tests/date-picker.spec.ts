@@ -1,0 +1,73 @@
+import { test, expect } from "@playwright/test";
+
+test("checkout uses the shared calendar and preserves the date in its summary", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Tambah Nasi Box Ayam Nusantara ke keranjang", exact: true }).click();
+  await page.getByRole("button", { name: "Buka keranjang, 1 item" }).click();
+  const cart = page.getByRole("dialog", { name: "Keranjangmu (1)", exact: true });
+  await cart.getByLabel("Nama pemesan").fill("Pengujian Kalender");
+  await cart.getByLabel("Tanggal acara").click();
+  const calendar = page.locator("#checkout-date-calendar");
+  await expect(calendar).toBeVisible();
+  await calendar.locator(".flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay)").first().click();
+  const selected = await cart.getByLabel("Tanggal acara").inputValue();
+  expect(selected).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  await expect(calendar).toBeHidden();
+  await cart.getByLabel("Alamat pengiriman").fill("Alamat uji, Jakarta");
+  await cart.getByRole("button", { name: "Siapkan ringkasan pesanan" }).click();
+  await expect(cart.getByRole("textbox", { name: "Ringkasan pesan" })).toHaveValue(new RegExp(selected));
+});
+
+test("consultation disables past dates and Escape closes only the open calendar", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Reservasi catering FoodStore" }).click();
+  const dialog = page.getByRole("dialog", { name: "Rencanakan cateringmu", exact: true });
+  const date = dialog.getByLabel("Tanggal acara");
+  await date.fill("2000-01-01");
+  expect(await date.evaluate((input: HTMLInputElement) => input.checkValidity())).toBe(false);
+  await date.fill("");
+  expect(await date.evaluate((input: HTMLInputElement) => input.checkValidity())).toBe(false);
+  await date.click();
+  const calendar = page.locator("#inquiry-date-calendar");
+  await expect(calendar).toBeVisible();
+  await expect(calendar.locator(".flatpickr-day.flatpickr-disabled").first()).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(calendar).toBeHidden();
+  await expect(dialog).toBeVisible();
+  await date.click();
+  await calendar.locator(".flatpickr-day:not(.flatpickr-disabled):not(.prevMonthDay):not(.nextMonthDay)").first().click();
+  await dialog.getByLabel("Nama kamu").fill("Uji konsultasi");
+  await dialog.getByLabel("Jumlah tamu").fill("30");
+  await dialog.getByLabel("Kebutuhan acara").fill("Catering untuk acara keluarga");
+  const selected = await date.inputValue();
+  await dialog.getByRole("button", { name: "Siapkan konsultasi" }).click();
+  await expect(dialog.getByRole("textbox", { name: "Ringkasan pesan" })).toHaveValue(new RegExp(selected));
+});
+
+test("feedback accepts historical dates and keeps them when editing the review", async ({ page }) => {
+  await page.goto("/saran-keluhan");
+  await page.getByLabel("Nama lengkap").fill("Uji masukan");
+  await page.getByLabel("Jenis pesan").selectOption("Keluhan");
+  const date = page.getByLabel("Tanggal pesanan");
+  await date.fill("2020-01-10");
+  await page.getByLabel("Ceritakan kepada kami").fill("Mohon bantuan mengecek rincian pesanan saya.");
+  await date.click();
+  const calendar = page.locator("#feedback-date-calendar");
+  await expect(calendar).toBeVisible();
+  await expect(calendar.locator(".selected")).toHaveText("10");
+  const bounds = await calendar.boundingBox();
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Tinjau pesan" }).click();
+  const href = await page.getByRole("link", { name: "Lanjutkan ke WhatsApp" }).getAttribute("href");
+  expect(new URL(href!).searchParams.get("text")).toContain("10/01/2020");
+  await page.getByRole("button", { name: "Ubah pesan" }).click();
+  await expect(date).toHaveValue("2020-01-10");
+  await date.fill("");
+  await page.keyboard.press("Escape");
+  await expect(calendar).toBeHidden();
+  await page.getByLabel("Ceritakan kepada kami").click();
+  await page.getByRole("button", { name: "Tinjau pesan" }).click();
+  await expect(page.getByRole("heading", { name: "Periksa pesanmu" })).toBeVisible();
+});

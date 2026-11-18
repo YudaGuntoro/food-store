@@ -1,78 +1,75 @@
-# Cendekia — Website dan Portal Administrator
+# FoodStore
 
-Website profil sekolah untuk menampilkan program belajar, fasilitas, kegiatan siswa, berita, pengumuman, dan informasi Sistem Penerimaan Murid Baru (SPMB).
+Website katalog catering bernuansa oranye dan krem, menggunakan Next.js, React, dan TypeScript. Fondasi berasal dari template website sekolah; modul sekolah, dashboard, database, dan aset sekolah sudah dikeluarkan dari project aktif. Riwayat awal dan lisensi template tetap dipertahankan.
 
-Satu repository berisi website publik, dashboard admin, dan backend CMS. Halaman LMP (Lomba Mata Pelajaran) dan formulir pendaftarannya juga terhubung ke backend yang sama.
+## Menjalankan
 
-```text
-package/                     Website utama Next.js (port 3000)
-cendekia-dashboard/
-  Frontend/                  Portal Administrator Next.js (port 3002)
-  Backend/                   ASP.NET Core API (port 5243)
-  database/                  Skema dan data awal MySQL cendekia_cms
-  scripts/                   Setup database dan pengujian integrasi
-```
-
-Panduan API, database, dan dashboard tersedia di [cendekia-dashboard/README.md](cendekia-dashboard/README.md). Setiap aplikasi memasang dependensinya sendiri. Untuk hosting, root aplikasi tetap `package` untuk website dan `cendekia-dashboard/Frontend` untuk dashboard; backend dijalankan terpisah. File `.env` lokal, data database yang sedang digunakan, cache, dan hasil build tidak disimpan di Git.
-
-## Fitur
-
-- Beranda responsif untuk desktop dan HP.
-- Profil sekolah, sejarah, struktur organisasi, pimpinan, dan tenaga pendidik.
-- Program belajar, ekstrakurikuler, OSIS, fasilitas, dan prestasi siswa.
-- Daftar berita dengan halaman detail untuk setiap artikel.
-- Pengumuman dengan popup detail.
-- Informasi SPMB, persyaratan, alur pendaftaran, dan formulir calon siswa.
-- Kontak sekolah dan akses WhatsApp.
-
-## Menjalankan proyek
-
-Gunakan Node.js 20 atau lebih baru. Aplikasi berada di direktori `package`.
+Node.js 20.9+ diperlukan. Jalankan dari folder `package`:
 
 ```bash
-git clone https://github.com/YudaGuntoro/website-sekolah.git
-cd website-sekolah/package
 npm ci
 npm run dev
 ```
 
-Buka http://localhost:3000.
+Buka http://localhost:3000. Untuk produksi, jalankan `npm run build` lalu `npm start`. Root aplikasi untuk hosting adalah `package`; Dockerfile juga tersedia di sana.
 
-## Build produksi
+## Deployment
 
-Jalankan dari direktori `package`:
+Domain tujuan: **https://foodstore.nusakaryadigital.com**.
+
+- Repository: `https://github.com/YudaGuntoro/food-store`, branch `main`.
+- Root aplikasi/build context: `package`.
+- Build: `npm ci` lalu `npm run build`. Start: `npm start`, port `3000`.
+- Untuk Docker, gunakan `package/Dockerfile` dengan build context `package`; aplikasi standalone berjalan pada port `3000`.
+- Simpan `MIDTRANS_SERVER_KEY` sandbox sebagai environment variable rahasia di hosting saat runtime. File `.env.local` tidak dikirim ke GitHub atau image Docker.
+- Isi konfigurasi `NEXT_PUBLIC_STORE_*` sebelum build bila ingin mengaktifkan kontak yang dikonfigurasi lewat environment.
+- Pasang domain dan sertifikat HTTPS pada hosting/reverse proxy, dan pertahankan header `Host` sesuai domain publik agar pemeriksaan origin checkout berfungsi.
+
+Payment gateway tetap dalam mode **Sandbox** meskipun website dibuka dari domain ini.
+
+## Fitur
+
+- Tampilan responsif dengan katalog nasi box, tumpeng, nasi kebuli, dan snack box.
+- Pencarian, filter kategori, detail menu, serta keranjang dengan kontrol jumlah dan penyimpanan di browser.
+- Ringkasan pesanan berisi nama, tanggal, alamat, dan catatan; konsultasi acara dengan jumlah tamu.
+- Ringkasan bisa disalin atau dibuka di WhatsApp setelah nomor toko dikonfigurasi.
+- Navigasi ponsel, dialog dengan pengelolaan fokus bawaan browser, dan dukungan reduced motion.
+- Uji pembayaran Midtrans Sandbox melalui QRIS/virtual account dan halaman pemeriksaan status dari server.
+
+Ini adalah pratinjau toko: semua menu, porsi, dan harga merupakan contoh. Foto adalah ilustrasi AI, bukan foto produk asli. Pembayaran tersedia khusus Midtrans Sandbox tanpa uang asli. Belum tersedia penyimpanan pesanan, pembayaran produksi, ongkir otomatis, atau dashboard admin. Persetujuan toko tetap diperlukan untuk pesanan catering.
+
+## Mencoba payment gateway
+
+Isi `MIDTRANS_SERVER_KEY` sandbox di `package/.env.local`, lalu restart server. Di keranjang, lengkapi form dan klik **Coba bayar di Sandbox**. Gunakan simulator bank Midtrans untuk membayar virtual account percobaan, lalu periksa hasil di `/pembayaran`. Jangan gunakan rekening bank asli.
+
+Panduan konfigurasi, simulasi, dan batas implementasi: [Midtrans Sandbox](package/docs/midtrans-sandbox.md).
+
+## Mengisi data toko
+
+### Banner slider
+
+Hero berisi 3 banner gambar lengkap (foto dan tulisan menyatu), berganti otomatis setiap 6 detik. Tersedia panah, titik navigasi, keyboard kiri/kanan, drag dengan mouse, dan swipe di ponsel. Banner mengikuti gerakan drag, lalu meluncur ke slide tujuan atau kembali saat tarikan terlalu pendek. Rotasi berhenti ketika kursor/fokus berada pada slider, tab browser tidak aktif, atau pengguna mengaktifkan reduced motion.
+
+Ganti file desktop dan ponsel di `package/public/images/banners/`. Daftar gambar, alt text, tautan, dan kategori tujuan diatur pada `package/src/lib/hero-slides.ts`. Rasio desktop 1600 × 610; versi ponsel 780 × 1460. Pertahankan rasio ini agar desain tidak terdistorsi. Banner awal dibuat dari layout HTML/CSS dan ilustrasi menu yang sudah ada. Untuk mengekspor ulang contoh banner, jalankan `node scripts/export-hero-banners.mjs` dari `package` (memerlukan Google Chrome).
+
+### Katalog dan kontak
+
+1. Ubah katalog dan harga di `package/src/lib/catalog.ts`.
+2. Ganti foto ilustrasi di `package/public/images/food/` dengan foto produk toko.
+3. Salin `package/.env.example` menjadi `package/.env.local`, lalu isi `NEXT_PUBLIC_STORE_WHATSAPP` dengan nomor asli beserta kode negara, format `62…` tanpa tanda baca. Restart server; untuk produksi, build ulang.
+4. Perbarui konten, area layanan, kebijakan, dan identitas toko sebelum digunakan untuk transaksi nyata.
+
+Tanpa nomor WhatsApp, website hanya menyediakan ringkasan yang dapat disalin dan menjelaskan bahwa pesan belum dikirim. Keranjang tersimpan di perangkat yang sama, tanpa data pribadi. Formulir tidak disimpan ke localStorage.
+
+## Pemeriksaan
 
 ```bash
+cd package
+npm run typecheck
 npm run build
-npm start
+npm run test:e2e
 ```
 
-Untuk hosting, gunakan `package` sebagai root directory aplikasi.
+Pengujian browser memakai Google Chrome yang terpasang di komputer. Konfigurasi ada di `package/playwright.config.ts`; ubah channel jika memakai browser lain. Pengujian mencakup desktop dan ponsel, pencarian, filter, detail, keranjang persisten, ringkasan pesanan, konsultasi, serta data keranjang tidak valid.
 
-## Struktur proyek
-
-```text
-package/
-  public/                 Gambar dan brosur sekolah
-  src/app/                Halaman dan routing aplikasi
-  src/app/components/     Komponen antarmuka
-  src/app/school-content.ts  Data berita, pengumuman, dan profil
-```
-
-## Catatan pengembangan
-
-Konten website dikelola melalui folder `cendekia-dashboard` dalam repository ini. Salin package/.env.example ke package/.env.local dan jalankan API CMS di port 5243; SCHOOL_API_URL mengatur alamat backend. Dengan konfigurasi ini, berita, pengumuman, guru, prestasi, profil/sejarah, kegiatan, fasilitas, ekstrakurikuler, program, OSIS, dan informasi SPMB dibaca dari database cendekia_cms. Hanya konten berstatus terbit yang ditampilkan. Tanpa SCHOOL_API_URL, website tetap menggunakan data template untuk preview mandiri.
-
-Formulir pendaftaran SPMB kini menyimpan data melalui API sekolah. Menu SPMB > Pengaturan Gelombang pada dashboard mengatur tahun ajaran dan empat jadwal gelombang. Pendaftaran tertutup di luar rentang aktif (WIB). Gelombang ditentukan server saat submit; nomor pendaftaran ditampilkan setelah berhasil. Data dapat diperiksa pada SPMB > Pendaftar SPMB. Sebelum dipakai, isi tanggal resmi dan aktifkan pendaftaran di dashboard.
-
-Beranda menampilkan embed profil Instagram resmi `@smpitcendekia`, termasuk informasi profil dan pratinjau foto yang ditentukan Instagram. Tombol Follow dan Lihat lebih banyak membuka profil Instagram; beranda tidak bergantung pada koleksi postingan Instagram di CMS. Jika embed tidak dapat dimuat, tautan profil tetap tersedia. Tampilan/jumlah foto mengikuti Instagram, bukan batas empat kartu CMS. Koleksi Instagram lama tetap tersedia di `/instagram` tanpa menghapus data.
-
-Feed TikTok memakai kartu custom dengan maksimal empat postingan terbaru di beranda dan halaman daftar `/tiktok`. Kartu CMS Instagram pada `/instagram` tetap memakai komponen yang sama. Admin cukup mengisi URL postingan; judul dan ringkasan opsional. Foto kartu diambil server website melalui `/api/social-image` dari postingan publik yang sudah terbit di CMS, tanpa kolom URL foto manual. Website memerlukan akses HTTPS keluar ke platform dan CDN gambarnya. Pengambilan otomatis mengikuti ketersediaan halaman publik; postingan privat, dihapus, atau dibatasi platform memakai ilustrasi pengganti dan tetap menyediakan tautan ke postingan. Tidak menggunakan akun/cookie Instagram pribadi atau layanan proxy pihak ketiga. Verifikasi resolver: `cd package && node scripts/check-social-thumbnails.mjs`.
-
-## Teknologi
-
-Next.js, React, TypeScript, dan Tailwind CSS.
-
-## Lisensi
-
-Ketentuan lisensi dan pemberitahuan hak cipta tersedia di [LICENSE.txt](LICENSE.txt).
+Catatan asal ilustrasi dan prompt berada di `package/docs/image-prompts.md`. Lisensi template awal tetap tersedia pada `LICENSE.txt`. Remote Git aktif: https://github.com/YudaGuntoro/food-store.

@@ -1,0 +1,41 @@
+.cart-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 50px;
+  padding: 0 9px;
+  background: transparent;
+  color: #34291f;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  transition: color .2s, background .2s, border-color .2s, box-shadow .2s;
+}
+.cart-button:hover { color: var(--orange); }
+.cart-button > svg { width: 22px; height: 22px; flex-shrink: 0; }
+.cart-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 21px;
+  height: 21px;
+  padding-inline: 5px;
+  border-radius: 7px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.cart-button.has-items { padding: 0 9px; gap: 3px; border-radius: 14px; background: #fff0e3; border-color: #f6c8a5; color: #b64b16; box-shadow: 0 3px 10px #d3621610; }
+.cart-button.has-items > svg { color: #db5c1e; fill: #ffdcc1; }
+.cart-button.has-items .cart-count { min-width: 27px; height: 27px; border-radius: 50%; border: 2px solid #fff; font-size: 12px; box-shadow: 0 2px 5px #db641e30; animation: cart-count-pop .3s ease-out; }
+.cart-button.has-items:hover { background: #ffe4cc; border-color: #edaa7c; box-shadow: 0 4px 13px #d3621620; color: #a03b0e; }
+@keyframes cart-count-pop { from { transform: scale(.75); } 65% { transform: scale(1.15); } to { transform: scale(1); } }
+@media(max-width:1150px) { .cart-button { gap: 8px; padding-left: 8px; font-size: 11px; } }
+@media(max-width:900px) { .cart-label { display: none; } .cart-button { min-width: 49px; min-height: 46px; padding: 0; gap: 6px; } }
+@media(max-width:700px) { .cart-button { min-height: 38px; min-width: 42px; gap: 5px; } .cart-button>svg { width: 21px; height: 21px; } .cart-count { min-width: 18px; height: 18px; font-size: 9px; border-radius: 6px; padding-inline: 4px; } }
+@media(max-width:700px) { .cart-button.has-items { min-height: 38px; padding: 0 7px; gap: 3px; border-radius: 11px; } .cart-button.has-items .cart-count { min-width: 23px; height: 23px; font-size: 10px; } }
+@media(prefers-reduced-motion:reduce) { .cart-button { transition: none; } .cart-button.has-items .cart-count { animation: none; } }
