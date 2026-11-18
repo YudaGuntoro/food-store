@@ -27,6 +27,25 @@ Domain tujuan: **https://foodstore.nusakaryadigital.com**.
 
 Payment gateway tetap dalam mode **Sandbox** meskipun website dibuka dari domain ini.
 
+### Docker Compose di VPS
+
+Jalankan dari root repository (folder yang berisi `compose.yaml`):
+
+```bash
+git pull --ff-only origin main
+cp .env.example .env
+nano .env
+docker compose up -d --build
+docker compose ps
+curl -I http://127.0.0.1:3101
+```
+
+Salin `.env.example` hanya pada setup pertama. Isi `MIDTRANS_SERVER_KEY` sandbox di `.env` pada VPS; jangan commit file tersebut. Saat update berikutnya, cukup `git pull --ff-only origin main` lalu `docker compose up -d --build`.
+
+Container hanya membuka port di loopback VPS. Arahkan reverse proxy yang sudah digunakan ke `http://127.0.0.1:3101`, pasang domain `foodstore.nusakaryadigital.com` beserta HTTPS, dan teruskan header `Host` asli. Ubah `FOODSTORE_PORT` di `.env` bila port tersebut sudah dipakai. Docker Compose ini tidak mengubah reverse proxy atau sertifikat yang sudah ada.
+
+Log aplikasi: `docker compose logs --tail=100 -f foodstore`.
+
 ## Fitur
 
 - Tampilan responsif dengan katalog nasi box, tumpeng, nasi kebuli, dan snack box.

@@ -1,0 +1,29 @@
+name: foodstore
+
+services:
+  foodstore:
+    build:
+      context: ./package
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_STORE_WHATSAPP: ${NEXT_PUBLIC_STORE_WHATSAPP:-6285157742849}
+        NEXT_PUBLIC_STORE_INSTAGRAM: ${NEXT_PUBLIC_STORE_INSTAGRAM:-}
+        NEXT_PUBLIC_STORE_TIKTOK: ${NEXT_PUBLIC_STORE_TIKTOK:-}
+        NEXT_PUBLIC_STORE_EMAIL: ${NEXT_PUBLIC_STORE_EMAIL:-}
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:${FOODSTORE_PORT:-3101}:3000"
+    environment:
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY:?Isi MIDTRANS_SERVER_KEY sandbox di .env VPS}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
